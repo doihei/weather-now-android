@@ -17,7 +17,7 @@ iOS の設計思想（レイヤード設計・DI・UDF・テスト戦略）を K
 | 非同期 | Coroutines + Flow / StateFlow |
 | ネットワーク | Retrofit + kotlinx.serialization |
 | UI | Jetpack Compose 1.10.x |
-| ナビゲーション | Navigation 3（1.0 stable） |
+| ナビゲーション | Navigation 3（1.1.2 stable） |
 | グラフ | Vico |
 | 位置情報 | FusedLocationProviderClient |
 | テスト | JUnit5 + MockK + Turbine + Roborazzi |
@@ -88,7 +88,7 @@ class DefaultWeatherRepository @Inject constructor(private val api: OpenMeteoApi
 
 | Phase | 対象 | 内容 |
 |---|---|---|
-| **0** | `:build-logic` + 基盤 | Gradle マルチモジュール / convention plugin / KSP / Hilt 初期配線 |
+| **0** ✅ | `:build-logic` + 基盤 | Gradle マルチモジュール / convention plugin / KSP / Hilt 初期配線 |
 | **1** | `:core:model` + `:core:network` | data class / sealed / Retrofit / DTO-Domain 分離 |
 | **2** | `:core:domain` | Repository / Mutex キャッシュ / suspend / Flow / WeatherError |
 | **3** | `:feature:weather-mvvm` | ViewModel / viewModelScope / StateFlow / ライフサイクル |
@@ -120,12 +120,17 @@ class DefaultWeatherRepository @Inject constructor(private val api: OpenMeteoApi
 git clone <repo-url>
 cd weather-now-android
 
-# ビルド
-./gradlew build
+# ビルド（全モジュール）
+make build
 
 # テスト
-./gradlew test
+make test
+
+# よく使うコマンド一覧
+make help
 ```
+
+`make` が使えない場合は `./gradlew build` / `./gradlew test` でも同等。
 
 **前提条件**
 - Android Studio（Compose 1.10 / Nav3 対応版）
