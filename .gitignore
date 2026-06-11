@@ -14,3 +14,5 @@
 .cxx
 local.properties
 !.keep
+# Claude Code — ローカル設定は追跡しない
+.claude/settings.local.json

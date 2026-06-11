@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(./gradlew *)",
+      "Bash(find *)",
+      "Bash(grep *)",
+      "Bash(curl -s \"https://dl.google.com/dl/android/maven2/*\")",
+      "Bash(curl -s \"https://repo1.maven.org/maven2/*\")"
+    ]
+  }
+}
