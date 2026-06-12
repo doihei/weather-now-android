@@ -89,7 +89,7 @@ class DefaultWeatherRepository @Inject constructor(private val api: OpenMeteoApi
 | Phase | 対象 | 内容 |
 |---|---|---|
 | **0** ✅ | `:build-logic` + 基盤 | Gradle マルチモジュール / convention plugin / KSP / Hilt 初期配線 |
-| **1** | `:core:model` + `:core:network` | data class / sealed / Retrofit / DTO-Domain 分離 |
+| **1** 🔄 | `:core:model` ✅ + `:core:network` | data class / sealed / Retrofit / DTO-Domain 分離 |
 | **2** | `:core:domain` | Repository / Mutex キャッシュ / suspend / Flow / WeatherError |
 | **3** | `:feature:weather-mvvm` | ViewModel / viewModelScope / StateFlow / ライフサイクル |
 | **4** | `:feature:weather-mvi` | reducer / Channel one-off イベント / 純粋状態遷移 |

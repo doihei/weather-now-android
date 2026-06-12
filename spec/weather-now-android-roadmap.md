@@ -93,12 +93,8 @@ enum class WeatherCode(val wmoCode: Int) {
             entries.firstOrNull { it.wmoCode == code } ?: UNKNOWN
     }
 
-    val description: String
-        get() = when (this) {
-            CLEAR_SKY -> "快晴"
-            // ...
-            UNKNOWN -> "不明"
-        }
+    // 表示文字列は :core:ui の WeatherCode.labelResId (@StringRes) に移管
+    // Compose 側: stringResource(weatherCode.labelResId)
 }
 ```
 
