@@ -141,42 +141,56 @@ sealed interface WeatherError {
 iOS の `OpenMeteoEndpoint`（URL・クエリを enum に集約）と `ForecastResponse.toWeather()`（Response→Domain 変換）はそのまま移植できる。
 
 ```kotlin
+// 固定クエリ定数（Retrofit interface はデフォルト引数を @Query と組み合わせできないため切り出す）
+object OpenMeteoQueryDefaults {
+    const val CURRENT = "temperature_2m,apparent_temperature,relativehumidity_2m,weathercode,windspeed_10m"
+    const val HOURLY  = "temperature_2m,precipitation,weathercode"
+    const val DAILY   = "temperature_2m_max,temperature_2m_min,precipitation_probability_max,weathercode"
+    const val TIMEZONE = "auto"
+    const val FORECAST_DAYS = 7
+}
+
 // Retrofit インターフェース
 interface OpenMeteoApi {
+    @Suppress("LongParameterList") // API仕様由来の引数数のため抑制
     @GET("v1/forecast")
     suspend fun forecast(
-        @Query("latitude") lat: Double,
-        @Query("longitude") lon: Double,
-        @Query("current") current: String = "temperature_2m,apparent_temperature,relativehumidity_2m,weathercode,windspeed_10m",
-        @Query("hourly") hourly: String = "temperature_2m,precipitation,weathercode",
-        @Query("daily") daily: String = "temperature_2m_max,temperature_2m_min,precipitation_probability_max,weathercode",
-        @Query("timezone") timezone: String = "auto",
-        @Query("forecast_days") forecastDays: Int = 7,
-    ): ForecastResponse
+        @Query("latitude")     latitude: Double,
+        @Query("longitude")    longitude: Double,
+        @Query("current")      current: String,      // OpenMeteoQueryDefaults.CURRENT を渡す
+        @Query("hourly")       hourly: String,
+        @Query("daily")        daily: String,
+        @Query("timezone")     timezone: String,
+        @Query("forecast_days") forecastDays: Int,
+    ): ForecastResponseDto
 }
 ```
 
 ```kotlin
 // レスポンス DTO（kotlinx.serialization）
 @Serializable
-data class ForecastResponse(
-    val current: ForecastCurrent,
-    val hourly: ForecastHourly,
-    val daily: ForecastDaily,
+data class ForecastResponseDto(
+    val current: ForecastCurrentDto,
+    val hourly: ForecastHourlyDto,
+    val daily: ForecastDailyDto,
 )
 
 @Serializable
-data class ForecastCurrent(
+data class ForecastCurrentDto(
     @SerialName("temperature_2m") val temperature2m: Double,
     @SerialName("apparent_temperature") val apparentTemperature: Double,
     // ...
 )
 
-// DTO → Domain 変換（toWeather() に対応）
-fun ForecastResponse.toWeather(): Weather { /* ... */ }
+// DTO → Domain 変換（extension 関数。iOS の toWeather() に対応）
+fun ForecastResponseDto.toWeather(): Weather { /* ... */ }
 ```
 
-設計上のポイント：iOS の規約「クライアント実装にベース URL を直書きしない」は、Android では Retrofit の `baseUrl` を Hilt モジュールで一元注入することで守る。DTO（`@Serializable`）と Domain モデル（`data class`）を分け、変換関数で橋渡しする——これは iOS の `Responses/` と `CoreModels/` の分離と同じ。
+設計上のポイントが 2 点ある。
+
+**固定クエリの切り出し。** Retrofit の `interface` はデフォルト引数を `@Query` と組み合わせできない（Kotlin の interface 仕様上）。iOS の `OpenMeteoEndpoint` enum が固定クエリを列挙していたのと同様に、Android では `OpenMeteoQueryDefaults` object に定数として切り出し、リポジトリ層から渡す。
+
+**DTO と Domain モデルの分離。** iOS の規約「クライアント実装にベース URL を直書きしない」は Android では Retrofit の `baseUrl` を Hilt モジュールで一元注入することで守る。DTO（`@Serializable`）と Domain モデル（`data class`）を分け、`mapper/` の extension 関数で橋渡しする——これは iOS の `Responses/` と `CoreModels/` の分離と同じ。
 
 ### 2.4 DI：swift-dependencies → Hilt
 
