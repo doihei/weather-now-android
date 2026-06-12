@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- WeatherCode descriptions -->
+    <string name="weather_clear_sky">快晴</string>
+    <string name="weather_mainly_clear">晴れ</string>
+    <string name="weather_partly_cloudy">晴れ時々曇り</string>
+    <string name="weather_overcast">曇り</string>
+    <string name="weather_fog">霧</string>
+    <string name="weather_rime_fog">霧氷</string>
+    <string name="weather_light_drizzle">小雨（霧雨）</string>
+    <string name="weather_moderate_drizzle">霧雨</string>
+    <string name="weather_dense_drizzle">濃い霧雨</string>
+    <string name="weather_light_rain">小雨</string>
+    <string name="weather_moderate_rain">雨</string>
+    <string name="weather_heavy_rain">大雨</string>
+    <string name="weather_light_snow">小雪</string>
+    <string name="weather_moderate_snow">雪</string>
+    <string name="weather_heavy_snow">大雪</string>
+    <string name="weather_snow_grains">みぞれ</string>
+    <string name="weather_light_rain_shower">にわか雨（弱）</string>
+    <string name="weather_moderate_rain_shower">にわか雨</string>
+    <string name="weather_violent_rain_shower">激しいにわか雨</string>
+    <string name="weather_light_snow_shower">にわか雪（弱）</string>
+    <string name="weather_heavy_snow_shower">激しいにわか雪</string>
+    <string name="weather_thunderstorm">雷雨</string>
+    <string name="weather_thunderstorm_with_hail">雷雨（ひょう）</string>
+    <string name="weather_thunderstorm_with_heavy_hail">激しい雷雨（ひょう）</string>
+    <string name="weather_unknown">不明</string>
+</resources>
