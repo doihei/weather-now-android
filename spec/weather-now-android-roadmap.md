@@ -307,7 +307,7 @@ fun CurrentWeatherScreen(viewModel: CurrentWeatherViewModel = hiltViewModel()) {
 
 iOS 版の Phase 構成にそのまま対応させる。各 Phase は「目的 / 学ぶ概念 / 主要コード / iOS 対応 / 落とし穴」で構成。
 
-### Phase 0：プロジェクト基盤
+### Phase 0：プロジェクト基盤 **【完了】**
 
 - 目的：依存方向を構造的に強制する土台を作る
 - 学ぶ概念：Gradle マルチモジュール、version catalog、convention plugin、KSP、Hilt 配線
@@ -315,7 +315,7 @@ iOS 版の Phase 構成にそのまま対応させる。各 Phase は「目的 /
 - iOS 対応：`Package.swift` 群（path: 明示）→ Gradle モジュールグラフ
 - 落とし穴：最初に convention plugin を作らないと、モジュールが増えるたびに `build.gradle.kts` がコピペ地獄になる。大規模チーム開発では特に重要。ここを Phase 0 でやっておく
 
-### Phase 1：`:core:model` + `:core:network`
+### Phase 1：`:core:model` + `:core:network` **【完了】**
 
 - 目的：データの形と外界との接点を確定する
 - 学ぶ概念：`data class`、`sealed`、kotlinx.serialization、Retrofit、DTO/Domain 分離

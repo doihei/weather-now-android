@@ -43,15 +43,15 @@ iOS 版 WeatherNow（MVVM + TCA / 6 モジュール）を Kotlin + Jetpack Compo
 
 ## Phase ロードマップ
 
-| Phase | モジュール | 主なテーマ |
-|---|---|---|
-| 0 | `:build-logic`, 基盤設定 | Gradle マルチモジュール / convention plugin / KSP / Hilt 配線 |
-| 1 | `:core:model`, `:core:network` | data class / sealed / Retrofit / DTO-Domain 分離 |
-| 2 | `:core:domain` | Repository / Mutex キャッシュ / suspend / Flow / WeatherError |
-| 3 | `:feature:weather-mvvm` | ViewModel / viewModelScope / StateFlow / ライフサイクル |
-| 4 | `:feature:weather-mvi` | reducer / Channel / 純粋状態遷移 |
-| 5 | `:app` 全画面 | Compose UI / Navigation 3 / Vico / ダークモード |
-| Ex | `:core:ui` | デザインシステム / Tokens / strings.xml |
+| Phase | モジュール | 主なテーマ | 状態 |
+|---|---|---|---|
+| 0 | `:build-logic`, 基盤設定 | Gradle マルチモジュール / convention plugin / KSP / Hilt 配線 | **完了** |
+| 1 | `:core:model`, `:core:network` | data class / sealed / Retrofit / DTO-Domain 分離 | **完了** |
+| 2 | `:core:domain` | Repository / Mutex キャッシュ / suspend / Flow / WeatherError | 未着手 |
+| 3 | `:feature:weather-mvvm` | ViewModel / viewModelScope / StateFlow / ライフサイクル | 未着手 |
+| 4 | `:feature:weather-mvi` | reducer / Channel / 純粋状態遷移 | 未着手 |
+| 5 | `:app` 全画面 | Compose UI / Navigation 3 / Vico / ダークモード | 未着手 |
+| Ex | `:core:ui` | デザインシステム / Tokens / strings.xml | 一部着手 |
 
 ---
 
