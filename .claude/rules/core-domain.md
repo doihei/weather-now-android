@@ -138,6 +138,41 @@ val useCase = GetWeatherUseCase(
 - iOS の `withDependencies { $0.weatherRepository = FakeRepository() }` に対応
 - Hilt `@TestInstallIn` はモジュール全体の差し替えが必要な統合テスト向け。ユニットテストでは不要
 
+### Fake クラスの設計
+
+`FakeLocationService` は `result: Result<Location>` をコンストラクタで受け取り、呼び出し回数を `callCount` で公開する：
+
+```kotlin
+class FakeLocationService(
+    private val result: Result<Location> = Result.success(makeLocation()),
+) : LocationService {
+    var callCount = 0
+        private set
+
+    override suspend fun currentLocation(): Result<Location> {
+        callCount++
+        return result
+    }
+}
+```
+
+`FakeWeatherRepository` は `fetchCallCount` / `lastFetchLatitude` / `lastFetchLongitude` を公開し、
+呼び出しの有無・引数を検証できる：
+
+```kotlin
+class FakeWeatherRepository(
+    private val fetchResult: Result<Weather> = Result.success(makeWeather()),
+) : WeatherRepository {
+    var fetchCallCount = 0
+        private set
+    var lastFetchLatitude: Double? = null
+        private set
+    var lastFetchLongitude: Double? = null
+        private set
+    // ...
+}
+```
+
 ### Repository キャッシュのテスト観点
 
 | テストケース | 検証内容 |
@@ -164,12 +199,15 @@ val useCase = GetWeatherUseCase(
 @Test
 @DisplayName("位置情報の取得に失敗した場合、天気取得を試みずに失敗を返す")
 fun `returns failure immediately when location fails`() = runTest {
+    val fakeRepository = FakeWeatherRepository()
     val useCase = GetWeatherUseCase(
-        repository = FakeWeatherRepository(),
-        locationService = FakeLocationService(shouldFail = true),
+        repository = fakeRepository,
+        locationService = FakeLocationService(
+            result = Result.failure(WeatherException(WeatherError.LocationUnavailable)),
+        ),
     )
     assertTrue(useCase().isFailure)
-    // FakeWeatherRepository の呼び出し回数が 0 であることも検証する
+    assertEquals(0, fakeRepository.fetchCallCount) // early return で Repository が呼ばれないことを確認
 }
 ```
 

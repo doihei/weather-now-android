@@ -34,7 +34,7 @@ paths:
 |---|---|---|---|
 | `:core:model` | 不要 | 不要 | 純粋値型・`@ParameterizedTest` |
 | `:core:network` | 不要 | 不要 | Mapper 純粋関数・`@Nested`・境界値 |
-| `:core:domain` | MockK | Turbine + `runTest` | Repository キャッシュ・Mutex 挙動 |
+| `:core:domain` | MockK | `runTest`（Turbine 不要） | Repository キャッシュ・Mutex 挙動 |
 | `:feature:*` | `@TestInstallIn` | Turbine + `runTest` | ViewModel StateFlow / Channel |
 
 ## GitHub Actions CI
