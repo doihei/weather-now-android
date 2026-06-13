@@ -9,7 +9,9 @@ android {
 
 dependencies {
     implementation(project(":core:model"))
-    implementation(project(":core:network"))
-    implementation(libs.kotlinx.coroutines.android)
-    implementation(libs.play.services.location)
+    implementation(project(":core:network")) // OpenMeteoApi を使うため
+    implementation(libs.gms.location) // FusedLocationProviderClient
+
+    testImplementation(libs.bundles.test.unit)
+    testImplementation(libs.kotlinx.coroutines.test)
 }
