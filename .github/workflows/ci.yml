@@ -28,6 +28,9 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
+      - name: List available Android SDK platforms
+        run: $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --list --channel=3 2>/dev/null | grep "platforms;android" | tail -20
+
       - name: Install Android SDK Platform 37
         run: |
           yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --update > /dev/null
@@ -55,6 +58,9 @@ jobs:
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
+
+      - name: List available Android SDK platforms
+        run: $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --list --channel=3 2>/dev/null | grep "platforms;android" | tail -20
 
       - name: Install Android SDK Platform 37
         run: |
