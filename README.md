@@ -1,5 +1,7 @@
 # WeatherNow Android
 
+[![CI](https://github.com/doihei/weather-now-android/actions/workflows/ci.yml/badge.svg)](https://github.com/doihei/weather-now-android/actions/workflows/ci.yml)
+
 iOS 版 WeatherNow（MVVM + TCA / 6 モジュール）を **Kotlin + Jetpack Compose** でゼロから作り直すプロジェクト。
 
 「書き直し」ではなく「同じ設計思想を別の語彙で表現する翻訳プロジェクト」。  
@@ -20,7 +22,7 @@ iOS の設計思想（レイヤード設計・DI・UDF・テスト戦略）を K
 | ナビゲーション | Navigation 3（1.1.2 stable） |
 | グラフ | Vico |
 | 位置情報 | FusedLocationProviderClient |
-| テスト | JUnit5 + MockK + Turbine + Roborazzi |
+| テスト | JUnit + MockK + Turbine + Roborazzi |
 
 ---
 

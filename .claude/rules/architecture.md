@@ -44,7 +44,7 @@
 | TCA `StackState` | Navigation 3 バックスタックリスト |
 | `@Dependency` / `liveValue` | Hilt `@Binds` / `@TestInstallIn` |
 | `withDependencies { $0.x = Stub }` | コンストラクタに fake を直接渡す |
-| Swift Testing `@Test("日本語意図")` | JUnit5 `@DisplayName` + `@Test` |
+| Swift Testing `@Test("日本語意図")` | JUnit `@DisplayName` + `@Test` |
 | `TestClock.advance(by:)` | `runTest` + `advanceTimeBy()` |
 | スナップショットテスト | Roborazzi |
 
