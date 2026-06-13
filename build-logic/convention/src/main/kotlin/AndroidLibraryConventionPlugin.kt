@@ -41,7 +41,8 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
 
             dependencies {
                 "testImplementation"(libs.findBundle("test-unit").get())
-                "testRuntimeOnly"(libs.findLibrary("junit5-engine").get())
+                "testRuntimeOnly"(libs.findLibrary("junit-engine").get())
+                "testRuntimeOnly"(libs.findLibrary("junit-launcher").get())
             }
         }
     }

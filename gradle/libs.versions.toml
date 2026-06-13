@@ -47,7 +47,7 @@ vico                       = "3.2.2"
 
 # ─── テスト ───────────────────────────────────────────────────
 junit4                     = "4.13.2"
-junit5                     = "6.1.0"
+junit                      = "6.1.0"
 mockk                      = "1.14.11"
 turbine                    = "1.2.1"
 espresso                   = "3.7.0"
@@ -106,9 +106,10 @@ vico-compose-m3            = { group = "com.patrykandpatrick.vico", name = "comp
 
 # ─── テスト（JVM）────────────────────────────────────────────
 junit4                     = { group = "junit",                    name = "junit",                          version.ref = "junit4" }
-junit5-api                 = { group = "org.junit.jupiter",        name = "junit-jupiter-api",              version.ref = "junit5" }
-junit5-engine              = { group = "org.junit.jupiter",        name = "junit-jupiter-engine",           version.ref = "junit5" }
-junit5-params              = { group = "org.junit.jupiter",        name = "junit-jupiter-params",           version.ref = "junit5" }
+junit-api                 = { group = "org.junit.jupiter",        name = "junit-jupiter-api",              version.ref = "junit" }
+junit-engine              = { group = "org.junit.jupiter",        name = "junit-jupiter-engine",           version.ref = "junit" }
+junit-launcher            = { group = "org.junit.platform",       name = "junit-platform-launcher",        version.ref = "junit" }
+junit-params              = { group = "org.junit.jupiter",        name = "junit-jupiter-params",           version.ref = "junit" }
 mockk                      = { group = "io.mockk",                 name = "mockk",                          version.ref = "mockk" }
 turbine                    = { group = "app.cash.turbine",         name = "turbine",                        version.ref = "turbine" }
 kotlinx-coroutines-test    = { group = "org.jetbrains.kotlinx",   name = "kotlinx-coroutines-test",        version.ref = "coroutines" }
@@ -124,7 +125,7 @@ test-ext-junit             = { group = "androidx.test.ext",        name = "junit
 # build.gradle.kts で implementation(libs.bundles.network) のように書ける。
 network     = ["retrofit", "okhttp", "okhttp-logging", "kotlinx-serialization-json", "retrofit-kotlinx-converter"]
 compose     = ["compose-ui", "compose-ui-graphics", "compose-material3", "compose-ui-tooling-preview", "lifecycle-runtime-compose", "lifecycle-viewmodel-compose"]
-test-unit   = ["junit5-api", "junit5-params", "mockk", "turbine", "kotlinx-coroutines-test"]
+test-unit   = ["junit-api", "junit-params", "mockk", "turbine", "kotlinx-coroutines-test"]
 
 
 [plugins]
