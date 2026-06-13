@@ -98,7 +98,7 @@ retrofit-kotlinx-converter     = { group = "com.jakewharton.retrofit",  name = "
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
 
 # ─── 位置情報 ─────────────────────────────────────────────────
-play-services-location     = { group = "com.google.android.gms", name = "play-services-location", version.ref = "play-services-location" }
+gms-location               = { group = "com.google.android.gms", name = "play-services-location", version.ref = "play-services-location" }
 
 # ─── グラフ ───────────────────────────────────────────────────
 vico-compose               = { group = "com.patrykandpatrick.vico", name = "compose",    version.ref = "vico" }
