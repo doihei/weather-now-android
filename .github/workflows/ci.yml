@@ -28,13 +28,8 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      - name: List available Android SDK platforms
-        run: $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --list --channel=3 2>/dev/null | grep "platforms;android" | tail -20
-
       - name: Install Android SDK Platform 37
-        run: |
-          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --update > /dev/null
-          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --channel=3 "platforms;android-37"
+        run: yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --channel=3 "platforms;android-37.0"
 
       - name: Run ktlint check
         run: ./gradlew ktlintCheck
@@ -59,13 +54,8 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      - name: List available Android SDK platforms
-        run: $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --list --channel=3 2>/dev/null | grep "platforms;android" | tail -20
-
       - name: Install Android SDK Platform 37
-        run: |
-          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --update > /dev/null
-          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --channel=3 "platforms;android-37"
+        run: yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --channel=3 "platforms;android-37.0"
 
       - name: Run unit tests
         run: ./gradlew test
