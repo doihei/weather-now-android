@@ -99,51 +99,85 @@ dependencies {
 ## テスト設計
 
 - `viewModelScope` の制御は `runTest` + `StandardTestDispatcher` を使う
+- `Dispatchers.setMain(testDispatcher)` を `@BeforeEach` で設定し、`@AfterEach` で `resetMain()` する
+  （iOS の `@MainActor` 自動対応と違い、Android では明示的な差し替えが必要）
 - `viewState` の遷移検証は **Turbine** を使う
-- UseCase は `FakeGetWeatherUseCase`（コンストラクタに `Result<Weather>` を渡す）でモックする
-- `@TestInstallIn` は不要：ユニットテストはコンストラクタに fake を直接渡す
+- UseCase は **MockK**（`mockk<GetWeatherUseCase>()` + `coEvery`）でモックする
+- `@TestInstallIn` は不要：コンストラクタに mockk を直接渡す
+- テストケースは `@Nested` + `@DisplayName` でグループ化する
 
 ```kotlin
+@OptIn(ExperimentalCoroutinesApi::class)
 @DisplayName("CurrentWeatherViewModel")
 class CurrentWeatherViewModelTest {
+    private val testDispatcher = StandardTestDispatcher()
+    private lateinit var mockUseCase: GetWeatherUseCase
+    private lateinit var viewModel: CurrentWeatherViewModel
 
-    @Test
-    @DisplayName("load() を呼ぶと Loading → Loaded に遷移する")
-    fun `load transitions to Loaded on success`() = runTest {
-        val viewModel = CurrentWeatherViewModel(
-            getWeatherUseCase = FakeGetWeatherUseCase(Result.success(makeWeather())),
-        )
-        viewModel.viewState.test {
-            assertEquals(WeatherViewState.Idle, awaitItem())
-            viewModel.load()
-            assertEquals(WeatherViewState.Loading, awaitItem())
-            assertEquals(WeatherViewState.Loaded(makeWeather()), awaitItem())
-            cancelAndIgnoreRemainingEvents()
+    @BeforeEach
+    fun setUp() {
+        Dispatchers.setMain(testDispatcher)
+        mockUseCase = mockk()
+        viewModel = CurrentWeatherViewModel(getWeatherUseCase = mockUseCase)
+    }
+
+    @AfterEach
+    fun tearDown() {
+        Dispatchers.resetMain()
+    }
+
+    @Nested
+    @DisplayName("load() — 正常系")
+    inner class LoadSuccess {
+        @Test
+        @DisplayName("load() を呼ぶと Idle → Loading → Loaded の順で遷移する")
+        fun `load transitions through Idle to Loading to Loaded`() = runTest {
+            coEvery { mockUseCase() } returns Result.success(makeWeather())
+            viewModel.viewState.test {
+                assertEquals(WeatherViewState.Idle, awaitItem())
+                viewModel.load()
+                assertEquals(WeatherViewState.Loading, awaitItem())
+                assertTrue(awaitItem() is WeatherViewState.Loaded)
+                cancelAndIgnoreRemainingEvents()
+            }
         }
     }
 
-    @Test
-    @DisplayName("load() を呼ぶと Loading → Error に遷移する")
-    fun `load transitions to Error on failure`() = runTest {
-        val viewModel = CurrentWeatherViewModel(
-            getWeatherUseCase = FakeGetWeatherUseCase(
-                Result.failure(WeatherException(WeatherError.NetworkFailure("timeout"))),
-            ),
-        )
-        viewModel.viewState.test {
-            assertEquals(WeatherViewState.Idle, awaitItem())
-            viewModel.load()
-            assertEquals(WeatherViewState.Loading, awaitItem())
-            val error = awaitItem() as WeatherViewState.Error
-            assertTrue(error.message.isNotEmpty())
-            cancelAndIgnoreRemainingEvents()
+    @Nested
+    @DisplayName("load() — エラー系")
+    inner class LoadError {
+        @Test
+        @DisplayName("UseCase が失敗すると Loading → Error に遷移する")
+        fun `load transitions to Error on failure`() = runTest {
+            coEvery { mockUseCase() } returns
+                Result.failure(WeatherException(WeatherError.NetworkFailure("timeout")))
+            viewModel.viewState.test {
+                assertEquals(WeatherViewState.Idle, awaitItem())
+                viewModel.load()
+                assertEquals(WeatherViewState.Loading, awaitItem())
+                assertTrue(awaitItem() is WeatherViewState.Error)
+                cancelAndIgnoreRemainingEvents()
+            }
         }
     }
 
-    @Test
-    @DisplayName("Loading 中に load() を呼んでも二重リクエストにならない")
-    fun `load is idempotent while Loading`() = runTest {
-        // ...
+    @Nested
+    @DisplayName("二重リクエスト防止")
+    inner class DoubleRequestPrevention {
+        @Test
+        @DisplayName("Loading 中に load() を呼んでも UseCase は 1 回しか呼ばれない")
+        fun `calling load during loading does not trigger another request`() = runTest {
+            coEvery { mockUseCase() } returns Result.success(makeWeather())
+            viewModel.viewState.test {
+                awaitItem() // Idle を消費
+                viewModel.load()
+                awaitItem() // Loading に遷移
+                viewModel.load() // 二重呼び出し
+                awaitItem() // Loaded まで待つ
+                coVerify(exactly = 1) { mockUseCase() }
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
     }
 }
 ```
