@@ -94,7 +94,7 @@ class DefaultWeatherRepository @Inject constructor(private val api: OpenMeteoApi
 | **1** | `:core:model` + `:core:network` | data class / sealed / Retrofit / DTO-Domain 分離 | 完了 |
 | **2** | `:core:domain` | Repository / Mutex キャッシュ / suspend / Flow / WeatherError | 完了 |
 | **3** | `:feature:weather-mvvm` | ViewModel / viewModelScope / StateFlow / ライフサイクル | 完了 |
-| **4** | `:feature:weather-mvi` | reducer / Channel one-off イベント / 純粋状態遷移 | 未着手 |
+| **4** | `:feature:weather-mvi` | reducer / Channel one-off イベント / 純粋状態遷移 | 完了 |
 | **5** | 全画面 + `:app` | Compose UI / Navigation 3 / Vico グラフ / ダークモード | 未着手 |
 | **Ex** | `:core:ui` | デザイントークン / MaterialTheme カスタム / strings.xml | 一部着手 |
 
