@@ -136,7 +136,64 @@ dependencies {
 
 MVVM のテスト設計（`.claude/rules/feature-weather-mvvm.md`）を基本として、MVI 固有の差分を記す。
 
-- `state` は Turbine で検証（`state.test { ... }`）
-- `sideEffect` も Turbine で検証（`sideEffect.test { ... }`）
-- `onIntent()` で Intent を送り、`state` と `sideEffect` の両方を確認する
-- `OnAppear` の二重ロード防止テストでは `Loaded` 状態から呼び出しても UseCase が呼ばれないことを確認する
+### state と sideEffect の同時検証
+
+`sideEffect`（Channel）を `state`（StateFlow）と同時に収集するには `turbineScope` + `testIn` を使う。
+
+```kotlin
+turbineScope {
+    val stateTurbine = viewModel.state.testIn(this)
+    val sideEffectTurbine = viewModel.sideEffect.testIn(this)
+
+    stateTurbine.awaitItem() // Idle を消費
+    viewModel.onIntent(CurrentWeatherIntent.OnAppear)
+    stateTurbine.awaitItem() // Loading
+    stateTurbine.awaitItem() // Error
+
+    val sideEffect = sideEffectTurbine.awaitItem()
+    assertTrue(sideEffect is CurrentWeatherSideEffect.ShowSnackBar)
+
+    stateTurbine.cancelAndConsumeRemainingEvents()
+    sideEffectTurbine.cancelAndConsumeRemainingEvents()
+}
+```
+
+- `sideEffect` のみを単独検証する場合は `sideEffect.test { }` で良い
+- `state` と `sideEffect` を同一テストで検証する場合は `turbineScope` を使う（一方が他方をブロックしないため）
+
+### SideEffect のメッセージ検証
+
+`ShowSnackBar.message` には `WeatherError.userMessage` が入る。
+`NetworkFailure.message`（生の文字列）ではなく `userMessage`（`"通信エラー: ..."` 形式）で比較すること。
+
+```kotlin
+// 正
+assertEquals(expectedError.userMessage, sideEffect.message)
+
+// 誤（NetworkFailure の val message フィールドは生文字列なので一致しない）
+assertEquals(expectedError.message, sideEffect.message)
+```
+
+### StandardTestDispatcher と並行 Intent のテスト方針
+
+`StandardTestDispatcher` では suspend mock が即時返却するため、`OnAppear` の Job が
+Loading → Loaded まで一気に完走する。そのため「Loading 中に Refresh」のような
+State 遷移の順序に依存したテストは書けない。
+
+代わりに **`advanceUntilIdle()` + `coVerify` で UseCase の呼び出し回数を検証**する。
+
+```kotlin
+// 「Refresh は Loading 中でも実行される」の検証
+viewModel.onIntent(CurrentWeatherIntent.OnAppear)
+viewModel.onIntent(CurrentWeatherIntent.Refresh)
+
+testDispatcher.scheduler.advanceUntilIdle()
+
+coVerify(exactly = 2) { mockUseCase() }  // 両方が UseCase を呼んだ
+assertTrue(viewModel.state.value.viewState is CurrentWeatherState.ViewState.Loaded)
+```
+
+### OnAppear の二重ロード防止テスト
+
+`Loading` と `Loaded` の両方から `OnAppear` を送っても UseCase が呼ばれないことを確認する
+（MVVM の `load()` は Loading のみガード。MVI の `OnAppear` は Loaded もガード対象）。
