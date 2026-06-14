@@ -47,7 +47,11 @@ class CurrentWeatherMviViewModel
                     // Loading 中の二重発火防止 ＋ 既に Loaded なら再ロード不要
                     // iOS の guard !state.isLoaded else { return } に対応
                     val vs = _state.value.viewState
-                    if (vs is CurrentWeatherState.ViewState.Loading || vs is CurrentWeatherState.ViewState.Loaded) return
+                    if (vs is CurrentWeatherState.ViewState.Loading ||
+                        vs is CurrentWeatherState.ViewState.Loaded
+                    ) {
+                        return
+                    }
                     loadWeather()
                 }
                 // iOS の case .refreshButtonTapped: に対応
