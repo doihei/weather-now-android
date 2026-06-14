@@ -7,7 +7,6 @@ android {
 }
 
 dependencies {
-    // feature は domain と ui のみ参照する。network を直接触らない。
     implementation(project(":core:model"))
     implementation(project(":core:domain"))
     implementation(project(":core:ui"))
