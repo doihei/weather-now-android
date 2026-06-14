@@ -5,6 +5,22 @@
 - 依存は下向きのみ：`:feature` → `:core:domain` → `:core:model`
 - `:feature` は `:core:network` を直接参照しない
 
+## Gradle 依存の伝播ルール（重要）
+
+`:core:domain` は `:core:model` を `implementation` で宣言しているため、`:feature` モジュールに自動伝播しない。
+`:feature` で `Weather` など `:core:model` の型を直接参照する場合は `build.gradle.kts` に明示する。
+
+```kotlin
+// feature/weather-mvvm/build.gradle.kts
+dependencies {
+    implementation(project(":core:model"))   // 自動伝播しないため明示必要
+    implementation(project(":core:domain"))
+}
+```
+
+- `api()` への変更は `:core:domain` の内部実装を全 feature に漏洩させるため行わない
+- `:feature` 側の明示宣言が正しいアプローチ
+
 ## インターフェース境界
 
 - Repository・LocationService は `interface` で定義し、実装を Hilt で注入する

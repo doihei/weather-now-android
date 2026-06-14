@@ -65,3 +65,4 @@ iOS 版 WeatherNow（MVVM + TCA / 6 モジュール）を Kotlin + Jetpack Compo
 - [:core:model 層のルール](.claude/rules/core-model.md) — パッケージ構造・Android 依存禁止・ローカライズ文字列管理・MagicNumber
 - [:core:network 層のルール](.claude/rules/core-network.md) — DTO設計・Retrofitインターフェース・マッパー・Hilt DI配線
 - [:core:domain 層のルール](.claude/rules/core-domain.md) — Repository/Mutex キャッシュ・LocationService・UseCase・WeatherException 配置・@Binds vs @Provides
+- [:feature:weather-mvvm 層のルール](.claude/rules/feature-weather-mvvm.md) — WeatherViewState・ViewModel パターン・二重ロード防止・Result.fold・依存宣言・テスト設計
