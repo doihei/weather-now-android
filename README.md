@@ -13,7 +13,7 @@ iOS の設計思想（レイヤード設計・DI・UDF・テスト戦略）を K
 
 | 領域 | 採用 |
 |---|---|
-| 言語 | Kotlin 2.x（K2 コンパイラ） |
+| 言語 | Kotlin 2.3.21（K2 コンパイラ / KSP 2.3.9 との互換性制約） |
 | ビルド | Gradle Kotlin DSL + version catalog + convention plugin |
 | DI | Hilt（KSP） |
 | 非同期 | Coroutines + Flow / StateFlow |
@@ -95,8 +95,8 @@ class DefaultWeatherRepository @Inject constructor(private val api: OpenMeteoApi
 | **2** | `:core:domain` | Repository / Mutex キャッシュ / suspend / Flow / WeatherError | 完了 |
 | **3** | `:feature:weather-mvvm` | ViewModel / viewModelScope / StateFlow / ライフサイクル | 完了 |
 | **4** | `:feature:weather-mvi` | reducer / Channel one-off イベント / 純粋状態遷移 | 完了 |
-| **5** | 全画面 + `:app` | Compose UI / Navigation 3 / Vico グラフ / ダークモード | 未着手 |
-| **Ex** | `:core:ui` | デザイントークン / MaterialTheme カスタム / strings.xml | 一部着手 |
+| **5** | 全画面 + `:app` | Compose UI / Navigation 3 / Vico グラフ / ダークモード | 進行中（Navigation 3 配線・app エントリポイント・基本 Screen 実装済み。Vico / ダークモード未着手） |
+| **Ex** | `:core:ui` | デザイントークン / MaterialTheme カスタム / strings.xml | 進行中（コンポーネント・テーマ・strings.xml 実装済み。デザイントークン未着手） |
 
 ---
 

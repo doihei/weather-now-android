@@ -5,6 +5,30 @@ paths:
 
 # :feature:weather-mvi 層のルール
 
+## パッケージ・ディレクトリ構造
+
+```
+feature/weather-mvi/src/main/kotlin/.../feature/weather/mvi/
+└── currentweather/                          # 画面単位のサブパッケージ（画面追加時もここに並べる）
+    ├── CurrentWeatherMviScreen.kt           # @Composable Screen（UI のみ。Intent 経由でのみ ViewModel に指示）
+    ├── CurrentWeatherMviViewModel.kt        # @HiltViewModel
+    ├── CurrentWeatherState.kt               # data class（ViewState をネストした sealed interface で持つ）
+    ├── CurrentWeatherIntent.kt              # sealed interface（ユーザー意図のみ。内部イベントは含めない）
+    └── CurrentWeatherSideEffect.kt          # sealed interface（Channel で流す一度きりのイベント）
+
+feature/weather-mvi/src/main/res/
+└── values/
+    └── strings.xml                          # 画面固有の文字列（screen_title_weather_mvi 等）
+
+feature/weather-mvi/src/test/kotlin/.../feature/weather/mvi/
+└── currentweather/                          # main 側と同一サブパッケージ構造
+    └── CurrentWeatherMviViewModelTest.kt
+```
+
+**サブパッケージのルール：**
+- 画面を追加するときは `mvi/<screen名>/` サブパッケージを切る（フラットに並べない）
+- State・Intent・SideEffect は必ずそれぞれ独立したファイルに定義する（1 ファイルにまとめない）
+
 ## 状態設計
 
 `CurrentWeatherState` は `data class`、内側の `ViewState` は `sealed interface` のネストで定義する。

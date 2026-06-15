@@ -72,6 +72,17 @@ dependencies {
 - DI は **Hilt**。Koin は使わない（KMP 検討フェーズまで保留）
 - Navigation は **Navigation 3**。Nav2（文字列ルート）は使わない
 - convention plugin を先に作ること。モジュールが増えてからでは遅い
+- Kotlin バージョンは **KSP バージョンに合わせる**。KSP `2.3.9` は Kotlin `2.3.x` のみ対応
+
+## Linter 設定
+
+- **ktlint**: `.editorconfig` でルール設定
+  - `ktlint_function_naming_ignore_when_annotated_with = Composable`
+    （`@Composable` 関数は PascalCase が公式規約。ktlint のデフォルトと衝突するため除外）
+- **detekt**: `config/detekt/detekt.yml` でカスタムルール管理。ルート `build.gradle.kts` の `subprojects {}` ブロックで全モジュールに自動適用
+  - `FunctionNaming`: `@Composable` を除外（ktlint と同じ理由）
+  - `LongMethod`: しきい値 80（Compose の Scaffold + 状態収集パターンは構造上行数が増えるため緩和）
+  - `UnusedPrivateMember`: `@Preview` を除外（Android Studio からのみ参照されるため）
 
 ---
 

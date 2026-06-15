@@ -5,6 +5,28 @@ paths:
 
 # :feature:weather-mvvm 層のルール
 
+## パッケージ・ディレクトリ構造
+
+```
+feature/weather-mvvm/src/main/kotlin/.../feature/weather/mvvm/
+└── currentweather/                      # 画面単位のサブパッケージ（画面追加時もここに並べる）
+    ├── CurrentWeatherScreen.kt          # @Composable Screen（UI のみ。ロジックは ViewModel に委譲）
+    ├── CurrentWeatherViewModel.kt       # @HiltViewModel
+    └── WeatherViewState.kt              # sealed interface（4 状態）
+
+feature/weather-mvvm/src/main/res/
+└── values/
+    └── strings.xml                      # 画面固有の文字列（screen_title_weather_mvvm 等）
+
+feature/weather-mvvm/src/test/kotlin/.../feature/weather/mvvm/
+└── currentweather/                      # main 側と同一サブパッケージ構造
+    └── CurrentWeatherViewModelTest.kt
+```
+
+**サブパッケージのルール：**
+- 画面を追加するときは `mvvm/<screen名>/` サブパッケージを切る（フラットに並べない）
+- 共通化できる UI コンポーネントは `:core:ui` に置き、feature には Screen のみ残す
+
 ## ビューステート設計
 
 `WeatherViewState` は `sealed interface` で定義し、4 つの状態を持つ。
