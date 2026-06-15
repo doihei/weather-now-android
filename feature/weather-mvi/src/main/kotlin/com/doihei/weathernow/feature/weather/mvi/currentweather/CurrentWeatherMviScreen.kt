@@ -140,9 +140,9 @@ fun CurrentWeatherMviScreen(
         ) {
             // MVI 版は state.viewState のネストを辿る点が MVVM 版と異なる
             when (val viewState = state.viewState) {
-                is CurrentWeatherState.ViewState.Idle -> WeatherLoadingView()
+                is CurrentWeatherState.ViewState.Idle -> WeatherLoadingView(modifier = Modifier.fillMaxSize())
 
-                is CurrentWeatherState.ViewState.Loading -> WeatherLoadingView()
+                is CurrentWeatherState.ViewState.Loading -> WeatherLoadingView(modifier = Modifier.fillMaxSize())
 
                 is CurrentWeatherState.ViewState.Loaded ->
                     WeatherLoadedView(

@@ -103,9 +103,9 @@ fun CurrentWeatherScreen(
             when (val state = viewState) {
                 // Idle は load() 前の瞬間だけ。実質 Loading とほぼ同時に遷移するため
                 // ここでは Loading と同じ表示にする
-                is WeatherViewState.Idle -> WeatherLoadingView()
+                is WeatherViewState.Idle -> WeatherLoadingView(modifier = Modifier.fillMaxSize())
 
-                is WeatherViewState.Loading -> WeatherLoadingView()
+                is WeatherViewState.Loading -> WeatherLoadingView(modifier = Modifier.fillMaxSize())
 
                 is WeatherViewState.Loaded ->
                     WeatherLoadedView(
