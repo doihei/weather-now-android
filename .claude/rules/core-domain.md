@@ -102,6 +102,30 @@ class DefaultLocationService @Inject constructor(
 - Hilt は constructor parameter から qualifier を読むため `@param:` で明示する
 - `@ApplicationContext` のみ（ターゲット未指定）だと Kotlin 2.x で警告が出る
 
+### `SecurityException` を `LocationDenied` に変換するセーフティネット
+
+`DefaultLocationService` は `fusedLocationClient.getCurrentLocation()` を `try-catch` で囲み、
+`SecurityException`（パーミッション未付与）を `WeatherException(WeatherError.LocationDenied)` に変換する。
+
+```kotlin
+@SuppressLint("MissingPermission")
+override suspend fun currentLocation(): Result<Location> =
+    suspendCancellableCoroutine { continuation ->
+        try {
+            fusedLocationClient
+                .getCurrentLocation(Priority.PRIORITY_BALANCED_POWER_ACCURACY, null)
+                .addOnSuccessListener { ... }
+                .addOnFailureListener { ... }
+        } catch (e: SecurityException) {
+            continuation.resume(Result.failure(WeatherException(WeatherError.LocationDenied)))
+        }
+    }
+```
+
+- **Screen 側でパーミッションを確認してから `OnAppear` を送ることが主防衛線**
+- このセーフティネットは「確認を経ずに呼ばれた場合」への保険であり、通常フローでは発生しない
+- `@SuppressLint("MissingPermission")` は try-catch でセーフティネット済みのため許容する
+
 ## DI の設計（@Binds vs @Provides）
 
 | パターン | クラス種別 | 使う場面 |

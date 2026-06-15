@@ -56,6 +56,18 @@ private fun WeatherLoadingViewPreview() {
 - サイズが必要なコンポーネントは `Modifier.fillMaxSize()` を渡す（空白 Preview を防ぐ）
 - Preview では必ず `WeatherNowTheme` でラップしてテーマを適用する
 
+### WeatherLoadingView の呼び出しルール
+
+`WeatherLoadingView` を `Column` の中で使う場合は **必ず `Modifier.fillMaxSize()` を渡す**。
+
+```kotlin
+is WeatherViewState.Loading -> WeatherLoadingView(modifier = Modifier.fillMaxSize())
+```
+
+- `WeatherLoadingView` 内部は `Box(contentAlignment = Center)` で中央配置している
+- `Box` は親から与えられたサイズに従って配置を決める。`fillMaxSize()` がないと `Box` がインジケーターと同じサイズに縮み、`contentAlignment = Center` が効かない
+- 結果として `CircularProgressIndicator` が左上に偏って表示されるため、呼び出し元での指定が必須
+
 ### build.gradle.kts の依存宣言
 
 ```kotlin

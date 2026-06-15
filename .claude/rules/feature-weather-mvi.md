@@ -55,14 +55,16 @@ data class CurrentWeatherState(
 
 ```kotlin
 sealed interface CurrentWeatherIntent {
-    data object OnAppear : CurrentWeatherIntent
-    data object Refresh  : CurrentWeatherIntent
-    data object Retry    : CurrentWeatherIntent
+    data object OnAppear       : CurrentWeatherIntent
+    data object Refresh        : CurrentWeatherIntent
+    data object Retry          : CurrentWeatherIntent
+    data object PermissionDenied : CurrentWeatherIntent  // パーミッションダイアログで「拒否」を選択
 }
 ```
 
 - TCA の Action は内部イベント（API 応答）も含むが、自前 MVI ではユーザー意図のみを Intent とする
 - 内部イベント（API 応答等）は ViewModel 内で直接処理する
+- `PermissionDenied` はユーザーがシステムダイアログで拒否した操作を表す（エラー状態へ直接遷移）
 
 ## SideEffect 設計
 
@@ -109,15 +111,34 @@ class CurrentWeatherMviViewModel @Inject constructor(
 ```kotlin
 fun onIntent(intent: CurrentWeatherIntent) {
     when (intent) {
-        is CurrentWeatherIntent.OnAppear -> { ... }
-        is CurrentWeatherIntent.Refresh  -> { ... }
-        is CurrentWeatherIntent.Retry    -> { ... }
+        is CurrentWeatherIntent.OnAppear         -> { ... }
+        is CurrentWeatherIntent.Refresh          -> { ... }
+        is CurrentWeatherIntent.Retry            -> { ... }
+        is CurrentWeatherIntent.PermissionDenied -> { ... }
     }
 }
 ```
 
 - iOS の `Store.send(_ action:)` に対応
 - TCA の reducer が全 Action を `switch` で処理するのと同じ構造
+
+### パーミッション拒否時は `PermissionDenied` で直接 Error 状態へ
+
+```kotlin
+is CurrentWeatherIntent.PermissionDenied -> {
+    _state.update {
+        it.copy(
+            viewState = CurrentWeatherState.ViewState.Error(
+                WeatherError.LocationDenied.userMessage,
+            ),
+        )
+    }
+}
+```
+
+- UseCase を呼ばずに直接エラー状態へ遷移する（`SecurityException` を発生させない）
+- MVVM の `onPermissionDenied()` と同等の責務だが、MVI では Intent として受け取る点が異なる
+- `WeatherError.LocationDenied.userMessage` = `"位置情報の使用が許可されていません。設定アプリから許可してください。"`
 
 ### OnAppear の二重ロード防止
 
@@ -141,6 +162,52 @@ is CurrentWeatherIntent.Refresh -> loadWeather()
 
 - ユーザーが明示的に引っ張った場合は Loading 中でも強制リフレッシュ
 - MVVM の `refresh()` が Idle にリセットしてから `load()` するのと同等の意図
+
+## Screen のパーミッション処理
+
+`LaunchedEffect(Unit)` で直接 `onIntent(OnAppear)` を呼ぶのではなく、先にパーミッション確認を行う。
+
+```kotlin
+val context = LocalContext.current
+val permissionLauncher = rememberLauncherForActivityResult(
+    ActivityResultContracts.RequestMultiplePermissions(),
+) { permissions ->
+    val intent = if (permissions.values.any { it }) CurrentWeatherIntent.OnAppear
+                 else CurrentWeatherIntent.PermissionDenied
+    viewModel.onIntent(intent)
+}
+
+LaunchedEffect(Unit) {
+    val granted = ContextCompat.checkSelfPermission(
+        context, Manifest.permission.ACCESS_COARSE_LOCATION,
+    ) == PackageManager.PERMISSION_GRANTED
+    if (granted) {
+        viewModel.onIntent(CurrentWeatherIntent.OnAppear)
+    } else {
+        permissionLauncher.launch(
+            arrayOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+            ),
+        )
+    }
+}
+```
+
+- MVVM 版と構造は同じだが、結果を `onPermissionDenied()` ではなく `Intent.PermissionDenied` として渡す
+- `ContextCompat.checkSelfPermission` で付与済みなら即 `OnAppear`
+- `rememberLauncherForActivityResult` は `activity-compose` が必要（`AndroidFeatureConventionPlugin` に追加済み）
+
+## WeatherLoadingView の使い方
+
+`Column` の中で `WeatherLoadingView()` を使うとき、`Modifier.fillMaxSize()` を渡す。
+
+```kotlin
+is CurrentWeatherState.ViewState.Loading -> WeatherLoadingView(modifier = Modifier.fillMaxSize())
+```
+
+- 渡さないと `Box` がインジケーターのサイズに縮み、`contentAlignment = Center` が効かない
+- `Column` の残り領域を埋めることで中央配置が成立する
 
 ## 依存宣言のルール
 

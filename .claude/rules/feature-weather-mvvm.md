@@ -105,6 +105,59 @@ fun refresh() {
 - Loading 中でも強制リフレッシュできる
 - Idle にリセットすることで `load()` の二重ロード防止チェックを回避する
 
+### パーミッション拒否時は `onPermissionDenied()` で直接 Error 状態へ
+
+```kotlin
+fun onPermissionDenied() {
+    _viewState.value = WeatherViewState.Error(WeatherError.LocationDenied.userMessage)
+}
+```
+
+- UseCase を呼ばずに直接エラー状態へ遷移する（`SecurityException` を発生させない）
+- `WeatherError.LocationDenied.userMessage` = `"位置情報の使用が許可されていません。設定アプリから許可してください。"`
+
+## Screen のパーミッション処理
+
+`LaunchedEffect(Unit)` で直接 `viewModel.load()` を呼ぶのではなく、先にパーミッション確認を行う。
+
+```kotlin
+val context = LocalContext.current
+val permissionLauncher = rememberLauncherForActivityResult(
+    ActivityResultContracts.RequestMultiplePermissions(),
+) { permissions ->
+    if (permissions.values.any { it }) viewModel.load()
+    else viewModel.onPermissionDenied()
+}
+
+LaunchedEffect(Unit) {
+    val granted = ContextCompat.checkSelfPermission(
+        context, Manifest.permission.ACCESS_COARSE_LOCATION,
+    ) == PackageManager.PERMISSION_GRANTED
+    if (granted) viewModel.load()
+    else permissionLauncher.launch(
+        arrayOf(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+        ),
+    )
+}
+```
+
+- `ContextCompat.checkSelfPermission` で付与済みなら即ロード
+- 未付与ならシステムダイアログを表示し、結果に応じて `load()` / `onPermissionDenied()` を呼び分ける
+- `rememberLauncherForActivityResult` は `activity-compose` が必要（`AndroidFeatureConventionPlugin` に追加済み）
+
+## WeatherLoadingView の使い方
+
+`Column` の中で `WeatherLoadingView()` を使うとき、`Modifier.fillMaxSize()` を渡す。
+
+```kotlin
+is WeatherViewState.Loading -> WeatherLoadingView(modifier = Modifier.fillMaxSize())
+```
+
+- 渡さないと `Box` がインジケーターのサイズに縮み、`contentAlignment = Center` が効かない
+- `Column` の残り領域を埋めることで中央配置が成立する
+
 ## 依存宣言のルール
 
 `:core:domain` は `:core:model` を `implementation` で持つため、自動伝播しない。
