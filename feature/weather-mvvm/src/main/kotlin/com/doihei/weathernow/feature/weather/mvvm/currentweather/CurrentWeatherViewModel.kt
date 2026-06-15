@@ -1,4 +1,4 @@
-package com.doihei.weathernow.feature.weather.mvvm
+package com.doihei.weathernow.feature.weather.mvvm.currentweather
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

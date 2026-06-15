@@ -1,4 +1,4 @@
-package com.doihei.weathernow.feature.weather.mvi
+package com.doihei.weathernow.feature.weather.mvi.currentweather
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -103,7 +103,7 @@ class CurrentWeatherMviViewModel
                         // 一時的なスナックバー通知は SideEffect（Channel）で流す
                         // TCA の .send(.showAlert) に対応
                         // iOS なら Effect.send(.showAlert(message)) と書くところ
-                        _sideEffect.send(CurrentWeatherSideEffect.ShowSnackBar(message))
+                        _sideEffect.send(CurrentWeatherSideEffect.ShowSnackbar(message))
                     },
                 )
             }

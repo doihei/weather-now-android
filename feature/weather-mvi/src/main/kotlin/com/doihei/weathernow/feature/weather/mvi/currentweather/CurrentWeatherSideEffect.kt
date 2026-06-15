@@ -1,4 +1,4 @@
-package com.doihei.weathernow.feature.weather.mvi
+package com.doihei.weathernow.feature.weather.mvi.currentweather
 
 // iOS の Effect（副作用）のうち「一度きりの出来事」を表す型
 // StateFlow に入れると画面回転のたびに再発火する → Channel で流す
@@ -15,7 +15,7 @@ sealed interface CurrentWeatherSideEffect {
     // スナックバーで一時的なメッセージを表示する
     // iOS の .send(.showAlert(message)) に対応
     // StateFlow に入れると画面回転のたびにスナックバーが再表示されるバグになる
-    data class ShowSnackBar(
+    data class ShowSnackbar(
         val message: String,
     ) : CurrentWeatherSideEffect
 

@@ -1,4 +1,4 @@
-package com.doihei.weathernow.feature.weather.mvi
+package com.doihei.weathernow.feature.weather.mvi.currentweather
 
 import app.cash.turbine.test
 import app.cash.turbine.turbineScope
@@ -237,8 +237,8 @@ class CurrentWeatherMviViewModelTest {
     @DisplayName("SideEffect — Channel one-off 検証")
     inner class SideEffectTests {
         @Test
-        @DisplayName("失敗時に ShowSnackBar SideEffect が 1 回だけ流れる")
-        fun `failure emits ShowSnackBar SideEffect exactly once`() =
+        @DisplayName("失敗時に ShowSnackbar SideEffect が 1 回だけ流れる")
+        fun `failure emits ShowSnackbar SideEffect exactly once`() =
             runTest {
                 // Channel の one-off 性を検証する
                 // StateFlow なら画面回転後に再発火するが、Channel は一度しか流れない
@@ -259,10 +259,10 @@ class CurrentWeatherMviViewModelTest {
                     stateTurbine.awaitItem() // Error
 
                     val sideEffect = sideEffectTurbine.awaitItem()
-                    assertTrue(sideEffect is CurrentWeatherSideEffect.ShowSnackBar)
+                    assertTrue(sideEffect is CurrentWeatherSideEffect.ShowSnackbar)
                     assertEquals(
                         expectedError.userMessage,
-                        (sideEffect as CurrentWeatherSideEffect.ShowSnackBar).message,
+                        (sideEffect as CurrentWeatherSideEffect.ShowSnackbar).message,
                     )
 
                     stateTurbine.cancelAndConsumeRemainingEvents()
@@ -295,8 +295,8 @@ class CurrentWeatherMviViewModelTest {
             }
 
         @Test
-        @DisplayName("2 回失敗すると ShowSnackBar が 2 回流れる")
-        fun `two failures emit ShowSnackBar twice`() =
+        @DisplayName("2 回失敗すると ShowSnackbar が 2 回流れる")
+        fun `two failures emit ShowSnackbar twice`() =
             runTest {
                 coEvery { mockUseCase() } returns
                     Result.failure(WeatherException(WeatherError.NetworkFailure("1回目"))) andThen
@@ -313,7 +313,7 @@ class CurrentWeatherMviViewModelTest {
                     stateTurbine.awaitItem() // Loading
                     stateTurbine.awaitItem() // Error
 
-                    val first = sideEffectTurbine.awaitItem() as CurrentWeatherSideEffect.ShowSnackBar
+                    val first = sideEffectTurbine.awaitItem() as CurrentWeatherSideEffect.ShowSnackbar
                     assertTrue(first.message.contains("1回目"))
 
                     // 2回目（Retry）
@@ -321,7 +321,7 @@ class CurrentWeatherMviViewModelTest {
                     stateTurbine.awaitItem() // Loading
                     stateTurbine.awaitItem() // Error
 
-                    val second = sideEffectTurbine.awaitItem() as CurrentWeatherSideEffect.ShowSnackBar
+                    val second = sideEffectTurbine.awaitItem() as CurrentWeatherSideEffect.ShowSnackbar
                     assertTrue(second.message.contains("2回目"))
 
                     stateTurbine.cancelAndIgnoreRemainingEvents()

@@ -1,4 +1,4 @@
-package com.doihei.weathernow.feature.weather.mvi
+package com.doihei.weathernow.feature.weather.mvi.currentweather
 
 import com.doihei.weathernow.core.model.weather.Weather
 

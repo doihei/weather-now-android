@@ -1,4 +1,4 @@
-package com.doihei.weathernow.feature.weather.mvi
+package com.doihei.weathernow.feature.weather.mvi.currentweather
 
 // iOS の enum Action に対応
 // TCA の Action は「ユーザー操作」と「内部イベント（API 応答など）」を両方含むが、

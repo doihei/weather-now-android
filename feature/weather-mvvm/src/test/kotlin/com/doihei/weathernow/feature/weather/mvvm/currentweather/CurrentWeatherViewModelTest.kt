@@ -1,4 +1,4 @@
-package com.doihei.weathernow.feature.weather.mvvm
+package com.doihei.weathernow.feature.weather.mvvm.currentweather
 
 import app.cash.turbine.test
 import com.doihei.weathernow.core.domain.exception.WeatherException
