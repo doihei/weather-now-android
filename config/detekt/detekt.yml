@@ -1,0 +1,16 @@
+naming:
+  FunctionNaming:
+    # @Composable 関数は大文字始まりが公式規約のため除外
+    ignoreAnnotated:
+      - 'Composable'
+
+complexity:
+  LongMethod:
+    # Compose の Scaffold + 状態収集パターンは構造上行数が増えるため 80 に緩和
+    threshold: 80
+
+style:
+  UnusedPrivateMember:
+    # @Preview 関数は Android Studio からのみ参照されるため除外
+    ignoreAnnotated:
+      - 'Preview'
