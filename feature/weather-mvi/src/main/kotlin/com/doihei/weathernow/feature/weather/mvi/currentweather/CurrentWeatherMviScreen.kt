@@ -78,30 +78,37 @@ fun CurrentWeatherMviScreen(
     val context = LocalContext.current
     // iOS の CLLocationManager.requestWhenInUseAuthorization() に対応
     // 付与 → OnAppear、拒否 → PermissionDenied を送ることで ViewModel が状態を決定する
-    val permissionLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestMultiplePermissions(),
-    ) { permissions ->
-        val intent = if (permissions.values.any { it }) {
-            CurrentWeatherIntent.OnAppear
-        } else {
-            CurrentWeatherIntent.PermissionDenied
+    val permissionLauncher =
+        rememberLauncherForActivityResult(
+            ActivityResultContracts.RequestMultiplePermissions(),
+        ) { permissions ->
+            val intent =
+                if (permissions.values.any { it }) {
+                    CurrentWeatherIntent.OnAppear
+                } else {
+                    CurrentWeatherIntent.PermissionDenied
+                }
+            viewModel.onIntent(intent)
         }
-        viewModel.onIntent(intent)
-    }
 
     // iOS の .onAppear { store.send(.onAppear) } に対応
     // パーミッション付与済みなら即 OnAppear、未付与ならシステムダイアログを表示してから判断する
     LaunchedEffect(Unit) {
-        val granted = ContextCompat.checkSelfPermission(
-            context, Manifest.permission.ACCESS_COARSE_LOCATION,
-        ) == PackageManager.PERMISSION_GRANTED
-        if (granted) viewModel.onIntent(CurrentWeatherIntent.OnAppear)
-        else permissionLauncher.launch(
-            arrayOf(
-                Manifest.permission.ACCESS_FINE_LOCATION,
+        val granted =
+            ContextCompat.checkSelfPermission(
+                context,
                 Manifest.permission.ACCESS_COARSE_LOCATION,
-            ),
-        )
+            ) == PackageManager.PERMISSION_GRANTED
+        if (granted) {
+            viewModel.onIntent(CurrentWeatherIntent.OnAppear)
+        } else {
+            permissionLauncher.launch(
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                ),
+            )
+        }
     }
 
     Scaffold(

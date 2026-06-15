@@ -52,26 +52,35 @@ fun CurrentWeatherScreen(
     val context = LocalContext.current
     // iOS の CLLocationManager.requestWhenInUseAuthorization() に対応
     // 結果コールバック → granted なら load()、拒否なら onPermissionDenied() で即エラー状態へ
-    val permissionLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestMultiplePermissions(),
-    ) { permissions ->
-        if (permissions.values.any { it }) viewModel.load()
-        else viewModel.onPermissionDenied()
-    }
+    val permissionLauncher =
+        rememberLauncherForActivityResult(
+            ActivityResultContracts.RequestMultiplePermissions(),
+        ) { permissions ->
+            if (permissions.values.any { it }) {
+                viewModel.load()
+            } else {
+                viewModel.onPermissionDenied()
+            }
+        }
 
     // iOS の .onAppear { viewModel.load() } に対応
     // パーミッション付与済みなら即ロード、未付与ならシステムダイアログを表示してから判断する
     LaunchedEffect(Unit) {
-        val granted = ContextCompat.checkSelfPermission(
-            context, Manifest.permission.ACCESS_COARSE_LOCATION,
-        ) == PackageManager.PERMISSION_GRANTED
-        if (granted) viewModel.load()
-        else permissionLauncher.launch(
-            arrayOf(
-                Manifest.permission.ACCESS_FINE_LOCATION,
+        val granted =
+            ContextCompat.checkSelfPermission(
+                context,
                 Manifest.permission.ACCESS_COARSE_LOCATION,
-            ),
-        )
+            ) == PackageManager.PERMISSION_GRANTED
+        if (granted) {
+            viewModel.load()
+        } else {
+            permissionLauncher.launch(
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                ),
+            )
+        }
     }
 
     Scaffold(

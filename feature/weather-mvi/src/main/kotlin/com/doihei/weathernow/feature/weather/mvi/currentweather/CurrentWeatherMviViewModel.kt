@@ -68,9 +68,10 @@ class CurrentWeatherMviViewModel
                 is CurrentWeatherIntent.PermissionDenied -> {
                     _state.update {
                         it.copy(
-                            viewState = CurrentWeatherState.ViewState.Error(
-                                WeatherError.LocationDenied.userMessage,
-                            ),
+                            viewState =
+                                CurrentWeatherState.ViewState.Error(
+                                    WeatherError.LocationDenied.userMessage,
+                                ),
                         )
                     }
                 }
