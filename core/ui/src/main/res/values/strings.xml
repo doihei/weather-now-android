@@ -1,5 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- 共通 contentDescription -->
+    <string name="cd_refresh">更新</string>
+    <string name="cd_back">戻る</string>
+
+    <!-- WeatherErrorView -->
+    <string name="error_icon">⚠️</string>
+    <string name="error_retry">再試行</string>
+
+    <!-- WeatherLoadedView -->
+    <string name="forecast_7day">7日間の予報</string>
+    <string name="label_humidity">湿度</string>
+    <string name="label_wind_speed">風速</string>
+    <string name="format_temperature">%1$.1f%2$s</string>
+    <string name="format_temp_range">%1$.0f / %2$.0f%3$s</string>
+    <string name="format_wind_speed">%1$.1f km/h</string>
+
     <!-- WeatherCode descriptions -->
     <string name="weather_clear_sky">快晴</string>
     <string name="weather_mainly_clear">晴れ</string>

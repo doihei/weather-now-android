@@ -15,4 +15,6 @@ dependencies {
     implementation(libs.bundles.compose)
     implementation(libs.vico.compose)
     implementation(libs.vico.compose.m3)
+    debugImplementation(libs.compose.ui.tooling)
+    debugImplementation(libs.compose.ui.test.manifest)
 }
