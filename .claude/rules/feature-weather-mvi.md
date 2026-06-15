@@ -46,7 +46,7 @@ sealed interface CurrentWeatherIntent {
 
 ```kotlin
 sealed interface CurrentWeatherSideEffect {
-    data class ShowSnackBar(val message: String) : CurrentWeatherSideEffect
+    data class ShowSnackbar(val message: String) : CurrentWeatherSideEffect
 }
 
 // ViewModel 内
@@ -61,7 +61,7 @@ val sideEffect = _sideEffect.receiveAsFlow()
 | 今の画面状態として持ち続けるべきか？ | `State`（StateFlow） |
 | 一度だけ通知して終わりか？ | `SideEffect`（Channel） |
 
-例：エラー表示を画面に持ち続ける → `State.Error`、スナックバーを一時表示 → `SideEffect.ShowSnackBar`
+例：エラー表示を画面に持ち続ける → `State.Error`、スナックバーを一時表示 → `SideEffect.ShowSnackbar`
 
 ## ViewModel 設計
 
@@ -151,7 +151,7 @@ turbineScope {
     stateTurbine.awaitItem() // Error
 
     val sideEffect = sideEffectTurbine.awaitItem()
-    assertTrue(sideEffect is CurrentWeatherSideEffect.ShowSnackBar)
+    assertTrue(sideEffect is CurrentWeatherSideEffect.ShowSnackbar)
 
     stateTurbine.cancelAndConsumeRemainingEvents()
     sideEffectTurbine.cancelAndConsumeRemainingEvents()
@@ -163,7 +163,7 @@ turbineScope {
 
 ### SideEffect のメッセージ検証
 
-`ShowSnackBar.message` には `WeatherError.userMessage` が入る。
+`ShowSnackbar.message` には `WeatherError.userMessage` が入る。
 `NetworkFailure.message`（生の文字列）ではなく `userMessage`（`"通信エラー: ..."` 形式）で比較すること。
 
 ```kotlin
