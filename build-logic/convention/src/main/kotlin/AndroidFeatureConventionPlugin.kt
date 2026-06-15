@@ -29,6 +29,7 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
                 "implementation"(platform(bom))
 
                 "implementation"(libs.findBundle("compose").get())
+                "implementation"(libs.findLibrary("compose-material-icons-core").get())
 
                 "implementation"(libs.findLibrary("navigation3-ui").get())
                 "implementation"(libs.findLibrary("navigation3-runtime").get())

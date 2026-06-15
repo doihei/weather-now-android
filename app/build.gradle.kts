@@ -1,20 +1,20 @@
 plugins {
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.compose)
+    id("com.android.application")
+    id("org.jetbrains.kotlin.plugin.compose")
+    id("com.google.dagger.hilt.android")
+    id("com.google.devtools.ksp")
 }
 
 android {
-    namespace = "com.example.weather_now_android"
+    namespace = "com.doihei.weathernow"
     compileSdk = 37
 
     defaultConfig {
-        applicationId = "com.example.weather_now_android"
+        applicationId = "com.doihei.weathernow"
         minSdk = 26
         targetSdk = 37
         versionCode = 1
         versionName = "1.0"
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -34,19 +34,23 @@ android {
 }
 
 dependencies {
+    // feature モジュール（画面の実体）
+    implementation(project(":feature:weather-mvvm"))
+    implementation(project(":feature:weather-mvi"))
+    // core モジュール
+    implementation(project(":core:model"))
+    implementation(project(":core:domain"))
+    implementation(project(":core:ui"))
+    // Compose / Navigation 3
     implementation(platform(libs.compose.bom))
-    implementation(libs.activity.compose)
-    implementation(libs.compose.material3)
-    implementation(libs.compose.ui)
-    implementation(libs.compose.ui.graphics)
-    implementation(libs.compose.ui.tooling.preview)
-    implementation(libs.core.ktx)
+    implementation(libs.bundles.compose)
+    implementation(libs.navigation3.ui)
+    implementation(libs.navigation3.runtime)
+    // Hilt
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
+    implementation(libs.hilt.navigation.compose)
+    // Lifecycle
     implementation(libs.lifecycle.runtime)
-    testImplementation(libs.junit4)
-    androidTestImplementation(platform(libs.compose.bom))
-    androidTestImplementation(libs.compose.ui.test.junit4)
-    androidTestImplementation(libs.espresso.core)
-    androidTestImplementation(libs.test.ext.junit)
-    debugImplementation(libs.compose.ui.test.manifest)
-    debugImplementation(libs.compose.ui.tooling)
+    implementation(libs.activity.compose)
 }

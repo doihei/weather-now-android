@@ -12,7 +12,6 @@ java {
 dependencies {
     compileOnly(libs.plugins.android.application.map { "${it.pluginId}:${it.pluginId}.gradle.plugin:${it.version.requiredVersion}" })
     compileOnly(libs.plugins.android.library.map    { "${it.pluginId}:${it.pluginId}.gradle.plugin:${it.version.requiredVersion}" })
-    compileOnly(libs.plugins.kotlin.android.map     { "${it.pluginId}:${it.pluginId}.gradle.plugin:${it.version.requiredVersion}" })
     compileOnly(libs.plugins.kotlin.compose.map     { "${it.pluginId}:${it.pluginId}.gradle.plugin:${it.version.requiredVersion}" })
     compileOnly(libs.plugins.hilt.map               { "${it.pluginId}:${it.pluginId}.gradle.plugin:${it.version.requiredVersion}" })
     compileOnly(libs.plugins.ksp.map                { "${it.pluginId}:${it.pluginId}.gradle.plugin:${it.version.requiredVersion}" })
