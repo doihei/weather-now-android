@@ -7,7 +7,8 @@ naming:
 complexity:
   LongMethod:
     # Compose の Scaffold + 状態収集パターンは構造上行数が増えるため 80 に緩和
-    threshold: 80
+    # MVI Screen は SideEffect 収集 LaunchedEffect が加わりさらに長くなるため 100 に緩和
+    threshold: 100
 
 style:
   UnusedPrivateMember:

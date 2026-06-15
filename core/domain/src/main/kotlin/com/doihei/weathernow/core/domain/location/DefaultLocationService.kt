@@ -57,7 +57,7 @@ class DefaultLocationService
                         }
                 } catch (e: SecurityException) {
                     // パーミッション未付与のまま呼ばれた場合のフォールバック
-                    continuation.resume(Result.failure(WeatherException(WeatherError.LocationDenied)))
+                    continuation.resume(Result.failure(WeatherException(WeatherError.LocationDenied, e)))
                 }
             }
     }
