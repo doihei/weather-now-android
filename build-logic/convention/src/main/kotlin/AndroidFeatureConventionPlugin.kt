@@ -34,6 +34,7 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
                 "implementation"(libs.findLibrary("navigation3-ui").get())
                 "implementation"(libs.findLibrary("navigation3-runtime").get())
 
+                "implementation"(libs.findLibrary("activity-compose").get())
                 "implementation"(libs.findLibrary("hilt-navigation-compose").get())
                 "implementation"(libs.findLibrary("lifecycle-viewmodel-compose").get())
             }

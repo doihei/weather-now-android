@@ -1,5 +1,9 @@
 package com.doihei.weathernow.feature.weather.mvvm.currentweather
 
+import android.Manifest
+import android.content.pm.PackageManager
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -16,7 +20,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.core.content.ContextCompat
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.doihei.weathernow.core.ui.component.WeatherErrorView
@@ -43,12 +49,29 @@ fun CurrentWeatherScreen(
     // iOS の @State / @Observable 自動監視に対応
     val viewState by viewModel.viewState.collectAsStateWithLifecycle()
 
-    // LaunchedEffect(Unit)：
-    //   画面が最初にコンポーズされたとき1回だけ実行される
-    //   iOS の .onAppear { viewModel.load() } に対応
-    //   Unit キーにすることで再コンポーズのたびに再実行されない
+    val context = LocalContext.current
+    // iOS の CLLocationManager.requestWhenInUseAuthorization() に対応
+    // 結果コールバック → granted なら load()、拒否なら onPermissionDenied() で即エラー状態へ
+    val permissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions(),
+    ) { permissions ->
+        if (permissions.values.any { it }) viewModel.load()
+        else viewModel.onPermissionDenied()
+    }
+
+    // iOS の .onAppear { viewModel.load() } に対応
+    // パーミッション付与済みなら即ロード、未付与ならシステムダイアログを表示してから判断する
     LaunchedEffect(Unit) {
-        viewModel.load()
+        val granted = ContextCompat.checkSelfPermission(
+            context, Manifest.permission.ACCESS_COARSE_LOCATION,
+        ) == PackageManager.PERMISSION_GRANTED
+        if (granted) viewModel.load()
+        else permissionLauncher.launch(
+            arrayOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+            ),
+        )
     }
 
     Scaffold(

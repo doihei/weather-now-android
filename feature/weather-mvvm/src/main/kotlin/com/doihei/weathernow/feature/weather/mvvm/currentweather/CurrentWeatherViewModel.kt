@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.doihei.weathernow.core.domain.exception.WeatherException
 import com.doihei.weathernow.core.domain.usecase.GetWeatherUseCase
+import com.doihei.weathernow.core.model.error.WeatherError
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -72,5 +73,11 @@ class CurrentWeatherViewModel
         fun refresh() {
             _viewState.value = WeatherViewState.Idle
             load()
+        }
+
+        // パーミッション拒否時にエラー状態を直接セットする
+        // UseCase を呼ばずに済むため SecurityException が発生しない
+        fun onPermissionDenied() {
+            _viewState.value = WeatherViewState.Error(WeatherError.LocationDenied.userMessage)
         }
     }

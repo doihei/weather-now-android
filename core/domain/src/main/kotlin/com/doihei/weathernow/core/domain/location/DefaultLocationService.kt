@@ -24,36 +24,40 @@ class DefaultLocationService
 
         // iOS の func currentLocation() async throws -> CLLocationCoordinate2D に対応
         // @SuppressLint：Hilt + テストでパーミッションを管理するため実装側では抑制
+        // @SuppressLint：パーミッション確認は Screen 層の責務。実装側では抑制
         @SuppressLint("MissingPermission")
         override suspend fun currentLocation(): Result<Location> =
             suspendCancellableCoroutine { continuation ->
-                // iOS の CLLocationManager の requestLocation() + delegate コールバックに対応
-                // FusedLocationProviderClient は現在地を1回だけ取得する getCurrentLocation を使う
-                fusedLocationClient
-                    .getCurrentLocation(Priority.PRIORITY_BALANCED_POWER_ACCURACY, null)
-                    .addOnSuccessListener { androidLocation ->
-                        if (androidLocation != null) {
-                            // iOS の continuation.resume(returning:) に対応
-                            continuation.resume(
-                                Result.success(
-                                    Location(
-                                        latitude = androidLocation.latitude,
-                                        longitude = androidLocation.longitude,
+                try {
+                    // iOS の CLLocationManager の requestLocation() + delegate コールバックに対応
+                    // FusedLocationProviderClient は現在地を1回だけ取得する getCurrentLocation を使う
+                    fusedLocationClient
+                        .getCurrentLocation(Priority.PRIORITY_BALANCED_POWER_ACCURACY, null)
+                        .addOnSuccessListener { androidLocation ->
+                            if (androidLocation != null) {
+                                // iOS の continuation.resume(returning:) に対応
+                                continuation.resume(
+                                    Result.success(
+                                        Location(
+                                            latitude = androidLocation.latitude,
+                                            longitude = androidLocation.longitude,
+                                        ),
                                     ),
-                                ),
-                            )
-                        } else {
-                            continuation.resume(
-                                Result.failure(
-                                    WeatherException(WeatherError.LocationUnavailable),
-                                ),
-                            )
+                                )
+                            } else {
+                                continuation.resume(
+                                    Result.failure(
+                                        WeatherException(WeatherError.LocationUnavailable),
+                                    ),
+                                )
+                            }
+                        }.addOnFailureListener { exception ->
+                            // iOS の continuation.resume(throwing:) に対応
+                            continuation.resume(Result.failure(exception))
                         }
-                    }.addOnFailureListener { exception ->
-                        // iOS の continuation.resume(throwing:) に対応
-                        continuation.resume(
-                            Result.failure(exception),
-                        )
-                    }
+                } catch (e: SecurityException) {
+                    // パーミッション未付与のまま呼ばれた場合のフォールバック
+                    continuation.resume(Result.failure(WeatherException(WeatherError.LocationDenied)))
+                }
             }
     }

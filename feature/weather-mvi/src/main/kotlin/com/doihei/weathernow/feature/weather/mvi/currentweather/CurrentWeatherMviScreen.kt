@@ -1,5 +1,9 @@
 package com.doihei.weathernow.feature.weather.mvi.currentweather
 
+import android.Manifest
+import android.content.pm.PackageManager
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -19,7 +23,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.core.content.ContextCompat
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.doihei.weathernow.core.ui.component.WeatherErrorView
@@ -69,11 +75,33 @@ fun CurrentWeatherMviScreen(
         }
     }
 
-    // OnAppear Intent を送る
+    val context = LocalContext.current
+    // iOS の CLLocationManager.requestWhenInUseAuthorization() に対応
+    // 付与 → OnAppear、拒否 → PermissionDenied を送ることで ViewModel が状態を決定する
+    val permissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions(),
+    ) { permissions ->
+        val intent = if (permissions.values.any { it }) {
+            CurrentWeatherIntent.OnAppear
+        } else {
+            CurrentWeatherIntent.PermissionDenied
+        }
+        viewModel.onIntent(intent)
+    }
+
     // iOS の .onAppear { store.send(.onAppear) } に対応
-    // ViewModel 側で Loaded ガードがあるので複数回呼ばれても安全
+    // パーミッション付与済みなら即 OnAppear、未付与ならシステムダイアログを表示してから判断する
     LaunchedEffect(Unit) {
-        viewModel.onIntent(CurrentWeatherIntent.OnAppear)
+        val granted = ContextCompat.checkSelfPermission(
+            context, Manifest.permission.ACCESS_COARSE_LOCATION,
+        ) == PackageManager.PERMISSION_GRANTED
+        if (granted) viewModel.onIntent(CurrentWeatherIntent.OnAppear)
+        else permissionLauncher.launch(
+            arrayOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+            ),
+        )
     }
 
     Scaffold(

@@ -15,4 +15,8 @@ sealed interface CurrentWeatherIntent {
     // iOS の case retryButtonTapped に対応
     // Error 状態から再試行する（OnAppear と同じ処理だが意図を明示する）
     data object Retry : CurrentWeatherIntent
+
+    // システムのパーミッションダイアログでユーザーが「拒否」を選択したことを表す
+    // UseCase を呼ばずに直接 Error 状態へ遷移するために明示的に定義する
+    data object PermissionDenied : CurrentWeatherIntent
 }

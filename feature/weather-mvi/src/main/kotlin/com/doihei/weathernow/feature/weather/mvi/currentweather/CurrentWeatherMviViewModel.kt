@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.doihei.weathernow.core.domain.exception.WeatherException
 import com.doihei.weathernow.core.domain.usecase.GetWeatherUseCase
+import com.doihei.weathernow.core.model.error.WeatherError
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -62,6 +63,16 @@ class CurrentWeatherMviViewModel
                 // iOS の case .retryButtonTapped: に対応
                 is CurrentWeatherIntent.Retry -> {
                     loadWeather()
+                }
+                // パーミッション拒否時：UseCase を呼ばず直接 Error 状態へ遷移
+                is CurrentWeatherIntent.PermissionDenied -> {
+                    _state.update {
+                        it.copy(
+                            viewState = CurrentWeatherState.ViewState.Error(
+                                WeatherError.LocationDenied.userMessage,
+                            ),
+                        )
+                    }
                 }
             }
         }
