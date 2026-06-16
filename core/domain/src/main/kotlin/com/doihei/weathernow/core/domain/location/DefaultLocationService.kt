@@ -32,7 +32,7 @@ class DefaultLocationService
                     // iOS の CLLocationManager の requestLocation() + delegate コールバックに対応
                     // FusedLocationProviderClient は現在地を1回だけ取得する getCurrentLocation を使う
                     fusedLocationClient
-                        .getCurrentLocation(Priority.PRIORITY_BALANCED_POWER_ACCURACY, null)
+                        .getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
                         .addOnSuccessListener { androidLocation ->
                             if (androidLocation != null) {
                                 // iOS の continuation.resume(returning:) に対応
