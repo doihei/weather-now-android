@@ -81,7 +81,7 @@ companion object {
 override suspend fun currentLocation(): Result<Location> =
     suspendCancellableCoroutine { continuation ->
         fusedLocationClient
-            .getCurrentLocation(Priority.PRIORITY_BALANCED_POWER_ACCURACY, null)
+            .getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
             .addOnSuccessListener { continuation.resume(Result.success(Location(...))) }
             .addOnFailureListener { continuation.resume(Result.failure(it)) }
     }
@@ -113,7 +113,7 @@ override suspend fun currentLocation(): Result<Location> =
     suspendCancellableCoroutine { continuation ->
         try {
             fusedLocationClient
-                .getCurrentLocation(Priority.PRIORITY_BALANCED_POWER_ACCURACY, null)
+                .getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
                 .addOnSuccessListener { ... }
                 .addOnFailureListener { ... }
         } catch (e: SecurityException) {
