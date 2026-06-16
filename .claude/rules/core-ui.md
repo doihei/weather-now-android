@@ -12,7 +12,8 @@ core/ui/src/main/kotlin/.../core/ui/
 ├── component/              # 複数 feature から再利用する UI コンポーネント
 │   ├── WeatherLoadedView.kt
 │   ├── WeatherLoadingView.kt
-│   └── WeatherErrorView.kt
+│   ├── WeatherErrorView.kt
+│   └── HourlyForecastChart.kt
 ├── theme/                  # MaterialTheme カスタマイズ
 │   └── WeatherNowTheme.kt
 └── weather/                # domain モデルと UI の橋渡し（@StringRes extension 等）
@@ -20,7 +21,8 @@ core/ui/src/main/kotlin/.../core/ui/
 
 core/ui/src/main/res/
 └── values/
-    └── strings.xml         # 複数モジュールで使う共通文字列・フォーマット・contentDescription
+    ├── strings.xml         # 複数モジュールで使う共通文字列・フォーマット・contentDescription
+    └── dimens.xml          # コンポーネント固有のサイズ・間隔
 ```
 
 ## コンポーネント設計
