@@ -16,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -54,6 +55,25 @@ fun WeatherLoadedView(
                 temperatureUnit = temperatureUnit,
             )
         }
+
+        // ── Vico グラフを追加 ──────────────────────────────────────
+        // iOS の Chart { } セクションに対応
+        // hourly が空でないときだけ表示する（API レスポンス前の safety）
+        if (weather.hourly.isNotEmpty()) {
+            item {
+                Text(
+                    text = stringResource(R.string.forecast_hourly_title),
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(top = dimensionResource(R.dimen.spacing_small)),
+                )
+            }
+            item {
+                // HourlyForecastChart はスクロール可能なため LazyColumn のアイテムとして配置する
+                // iOS の ScrollView { Chart { } } に対応
+                HourlyForecastChart(hourlyForecasts = weather.hourly)
+            }
+        }
+        // ────────────────────────────────────────────────────────────
 
         // 日次予報
         item {

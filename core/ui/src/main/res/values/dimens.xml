@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Spacing -->
+    <dimen name="spacing_small">8dp</dimen>
+
+    <!-- Chart -->
+    <dimen name="chart_hourly_height">200dp</dimen>
+</resources>
