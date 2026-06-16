@@ -126,6 +126,27 @@ Text(stringResource(weather.currentWeather.code.labelResId))
 - `WeatherCode` 自体（`:core:model`）に文字列 ID を持たせない（Android 依存を禁止するため）
 - この extension が `:core:model` と `:core:ui` の唯一の橋渡し
 
+## 寸法リソースの管理
+
+### dimens.xml の配置
+
+`core/ui/src/main/res/values/dimens.xml` に追加する。
+
+既存のデザイントークン（`WeatherNowSpacing`, `WeatherNowTypography` 等）が存在する場合は dimens.xml より **Token を優先する**。
+
+### スペーシング定数の命名規則
+
+| キー | 値 | 用途の目安 |
+|---|---|---|
+| `spacing_xs` | 4dp | 最小の余白（気温と体感温度の間など） |
+| `spacing_sm` | 8dp | 小さな余白・アイコン周辺 |
+| `spacing_md` | 12dp | リストアイテム間・区切り線前後 |
+| `spacing_lg` | 16dp | 画面端からのマージン・セクション間 |
+| `spacing_xl` | 24dp | 大きなセクション余白・エラー画面など |
+| `spacing_card` | 20dp | Card 内のパディング専用 |
+
+新しい dp 値を追加するときは既存エントリと重複しないか確認し、同じ値なら流用する。
+
 ## 依存関係の制約
 
 - `:core:ui` が参照してよいのは `:core:model` のみ

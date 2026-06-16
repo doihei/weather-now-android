@@ -129,8 +129,8 @@ git diff に N件の変更ファイルが見つかりました。
 
 [B: dp 値]
 - WeatherLoadedView.kt:78 — Modifier.padding(16.dp)
-  → dimens.xml: <dimen name="spacing_medium">16dp</dimen>
-  → dimensionResource(R.dimen.spacing_medium)
+  → dimens.xml: <dimen name="spacing_lg">16dp</dimen>
+  → dimensionResource(R.dimen.spacing_lg)
 
 [D: マジックナンバー]
 - WeatherRepository.kt:55 — cacheExpiryMs = 300_000L
@@ -184,10 +184,10 @@ git diff に N件の変更ファイルが見つかりました。
 - 同じ dp 値のエントリがすでに存在する場合は、新規追加せず**既存のキー名を流用する**
 - 流用する場合はユーザーに確認を取る：
   ```
-  8dp は既存の spacing_small と同じ値です。
-  新たに追加せず spacing_small を流用してよいですか？
+  8dp は既存の spacing_sm と同じ値です。
+  新たに追加せず spacing_sm を流用してよいですか？
   ```
-- 値が同じでも用途が明確に異なる場合（例：`spacing_small` vs `divider_height`）は新規追加を提案する
+- 値が同じでも用途が明確に異なる場合（例：`spacing_sm` vs `divider_height`）は新規追加を提案する
 
 既存のデザイントークン（`WeatherNowSpacing`, `WeatherNowTypography` 等）が `:core:ui` に存在する場合は dimens.xml より **Token を優先する**。
 
@@ -232,7 +232,7 @@ Icon(contentDescription = stringResource(CoreUiR.string.cd_refresh))
 
 // dp 値（dimens.xml を使う場合）
 // Before: Modifier.padding(16.dp)
-Modifier.padding(dimensionResource(R.dimen.spacing_medium))
+Modifier.padding(dimensionResource(R.dimen.spacing_lg))
 ```
 
 ### D. 定数の追加
@@ -285,7 +285,7 @@ strings.xml に追加: 3件
 
 dimens.xml に追加: 2件（流用: 1件）
   - spacing_medium (16dp) ← 新規追加
-  - spacing_small (8dp) ← 既存を流用
+  - spacing_sm (8dp) ← 既存を流用
 
 定数を追加: 2件
   - WeatherRepository.kt: CACHE_EXPIRY_MS
