@@ -129,7 +129,7 @@ fun HourlyForecastChart(
             modifier
                 .fillMaxSize()
                 .height(dimensionResource(R.dimen.chart_hourly_height))
-                .padding(vertical = dimensionResource(R.dimen.spacing_small)),
+                .padding(vertical = dimensionResource(R.dimen.spacing_sm)),
         // 横スクロールを有効化（24時間×7日分は横幅に収まらないため）
         // iOS の .chartScrollableAxes(.horizontal) に対応
         scrollState = rememberVicoScrollState(scrollEnabled = true),

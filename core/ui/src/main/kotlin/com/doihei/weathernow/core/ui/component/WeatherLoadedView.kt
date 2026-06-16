@@ -19,7 +19,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.doihei.weathernow.core.model.settings.AppSettings
 import com.doihei.weathernow.core.model.weather.CurrentWeather
 import com.doihei.weathernow.core.model.weather.DailyForecast
@@ -43,10 +42,10 @@ fun WeatherLoadedView(
         modifier =
             modifier
                 .fillMaxSize()
-                .padding(horizontal = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+                .padding(horizontal = dimensionResource(R.dimen.spacing_lg)),
+        verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_md)),
     ) {
-        item { Spacer(modifier = Modifier.height(8.dp)) }
+        item { Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_sm))) }
 
         // 現在の天気カード
         item {
@@ -64,7 +63,7 @@ fun WeatherLoadedView(
                 Text(
                     text = stringResource(R.string.forecast_hourly_title),
                     style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.padding(top = dimensionResource(R.dimen.spacing_small)),
+                    modifier = Modifier.padding(top = dimensionResource(R.dimen.spacing_sm)),
                 )
             }
             item {
@@ -80,14 +79,14 @@ fun WeatherLoadedView(
             Text(
                 text = stringResource(R.string.forecast_7day),
                 style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(top = 8.dp),
+                modifier = Modifier.padding(top = dimensionResource(R.dimen.spacing_sm)),
             )
         }
         items(weather.daily) { daily ->
             DailyForecastRow(forecast = daily, temperatureUnit = temperatureUnit)
         }
 
-        item { Spacer(modifier = Modifier.height(16.dp)) }
+        item { Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_lg))) }
     }
 }
 
@@ -99,7 +98,7 @@ private fun CurrentWeatherCard(
 ) {
     Card(modifier = modifier.fillMaxSize()) {
         Column(
-            modifier = Modifier.padding(20.dp),
+            modifier = Modifier.padding(dimensionResource(R.dimen.spacing_card)),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             // 天気の説明文（:core:ui の WeatherCodeRes から @StringRes で取得）
@@ -108,7 +107,7 @@ private fun CurrentWeatherCard(
                 text = stringResource(weather.current.code.labelResId),
                 style = MaterialTheme.typography.titleLarge,
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_sm)))
             // 気温
             Text(
                 text =
@@ -119,7 +118,7 @@ private fun CurrentWeatherCard(
                     ),
                 style = MaterialTheme.typography.displayLarge,
             )
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_xs)))
             // 体感温度
             Text(
                 text =
@@ -130,9 +129,9 @@ private fun CurrentWeatherCard(
                     ),
                 style = MaterialTheme.typography.displayLarge,
             )
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_md)))
             HorizontalDivider()
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_md)))
             // 湿度・風速
             Row(
                 modifier = Modifier.fillMaxSize(),

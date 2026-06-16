@@ -12,9 +12,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.doihei.weathernow.core.ui.R
 
 @Composable
@@ -27,7 +27,7 @@ fun WeatherErrorView(
         modifier =
             modifier
                 .fillMaxSize()
-                .padding(24.dp),
+                .padding(dimensionResource(R.dimen.spacing_xl)),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -35,13 +35,13 @@ fun WeatherErrorView(
             text = stringResource(R.string.error_icon),
             style = MaterialTheme.typography.displayMedium,
         )
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_lg)))
         Text(
             text = message,
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_xl)))
         Button(onClick = onRetry) {
             Text(stringResource(R.string.error_retry))
         }
