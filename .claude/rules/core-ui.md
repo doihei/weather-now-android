@@ -15,7 +15,8 @@ core/ui/src/main/kotlin/.../core/ui/
 │   ├── WeatherErrorView.kt
 │   └── HourlyForecastChart.kt
 ├── theme/                  # MaterialTheme カスタマイズ
-│   └── WeatherNowTheme.kt
+│   ├── WeatherNowColor.kt  # カラーパレット定義（light / dark トークン）
+│   └── WeatherNowTheme.kt  # MaterialTheme カスタマイズ（LightColorScheme / DarkColorScheme）
 └── weather/                # domain モデルと UI の橋渡し（@StringRes extension 等）
     └── WeatherCodeRes.kt   # WeatherCode.labelResId extension
 
