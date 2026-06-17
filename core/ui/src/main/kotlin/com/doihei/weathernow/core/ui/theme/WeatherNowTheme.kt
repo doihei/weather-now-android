@@ -2,6 +2,7 @@ package com.doihei.weathernow.core.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Typography
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
@@ -91,9 +92,24 @@ fun WeatherNowTheme(
     //   if colorScheme == .dark { DarkColors } else { LightColors }
     val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
 
+    // iOS の UIFont.preferredFont(forTextStyle:) / AppTypography と同じ考え方：
+    // テーマを通じて全コンポーネントにフォントスタイルを伝播させる
+    // コンポーネント側は MaterialTheme.typography.xxx のまま変更不要
+    val typography =
+        Typography(
+            displayLarge = WeatherNowTypography.displayLarge,
+            displayMedium = WeatherNowTypography.displayMedium,
+            titleLarge = WeatherNowTypography.titleLarge,
+            titleMedium = WeatherNowTypography.titleMedium,
+            bodyLarge = WeatherNowTypography.bodyLarge,
+            bodyMedium = WeatherNowTypography.bodyMedium,
+            bodySmall = WeatherNowTypography.bodySmall,
+            labelSmall = WeatherNowTypography.labelSmall,
+        )
+
     MaterialTheme(
         colorScheme = colorScheme,
-        // typography / shapes はデフォルトのまま（Phase Ex で拡張予定）
+        typography = typography,
         content = content,
     )
 }
