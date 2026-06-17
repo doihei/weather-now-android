@@ -1,5 +1,6 @@
 package com.doihei.weathernow.core.ui.component
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -9,10 +10,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import com.doihei.weathernow.core.model.weather.HourlyForecast
 import com.doihei.weathernow.core.ui.R
 import com.doihei.weathernow.core.ui.theme.WeatherNowSize
 import com.doihei.weathernow.core.ui.theme.WeatherNowSpacing
+import com.doihei.weathernow.core.ui.theme.WeatherNowTheme
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
 import com.patrykandpatrick.vico.compose.cartesian.axis.HorizontalAxis
 import com.patrykandpatrick.vico.compose.cartesian.axis.VerticalAxis
@@ -135,4 +138,24 @@ fun HourlyForecastChart(
         // iOS の .chartScrollableAxes(.horizontal) に対応
         scrollState = rememberVicoScrollState(scrollEnabled = true),
     )
+}
+
+@Preview(showBackground = true, name = "Chart Light")
+@Composable
+private fun HourlyForecastChartLightPreview() {
+    WeatherNowTheme(darkTheme = false) {
+        HourlyForecastChart(hourlyForecasts = emptyList())
+    }
+}
+
+@Preview(
+    showBackground = true,
+    name = "Chart Dark",
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+)
+@Composable
+private fun HourlyForecastChartDarkPreview() {
+    WeatherNowTheme(darkTheme = true) {
+        HourlyForecastChart(hourlyForecasts = emptyList())
+    }
 }

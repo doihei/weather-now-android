@@ -1,5 +1,6 @@
 package com.doihei.weathernow.core.ui.component
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -16,6 +17,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.doihei.weathernow.core.ui.R
 import com.doihei.weathernow.core.ui.theme.WeatherNowSpacing
+import com.doihei.weathernow.core.ui.theme.WeatherNowTheme
 
 @Composable
 fun WeatherErrorView(
@@ -48,11 +50,28 @@ fun WeatherErrorView(
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, name = "Error Light")
 @Composable
-private fun WeatherErrorViewPreview() {
-    WeatherErrorView(
-        message = "位置情報を取得できませんでした",
-        onRetry = {},
-    )
+private fun WeatherErrorViewLightPreview() {
+    WeatherNowTheme(darkTheme = false) {
+        WeatherErrorView(
+            message = "位置情報を取得できませんでした",
+            onRetry = {},
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    name = "Error Dark",
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+)
+@Composable
+private fun WeatherErrorViewDarkPreview() {
+    WeatherNowTheme(darkTheme = true) {
+        WeatherErrorView(
+            message = "位置情報を取得できませんでした",
+            onRetry = {},
+        )
+    }
 }

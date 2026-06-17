@@ -1,5 +1,6 @@
 package com.doihei.weathernow.core.ui.component
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -25,6 +26,7 @@ import com.doihei.weathernow.core.model.weather.Weather
 import com.doihei.weathernow.core.model.weather.WeatherCode
 import com.doihei.weathernow.core.ui.R
 import com.doihei.weathernow.core.ui.theme.WeatherNowSpacing
+import com.doihei.weathernow.core.ui.theme.WeatherNowTheme
 import com.doihei.weathernow.core.ui.weather.labelResId
 import java.time.format.TextStyle
 import java.util.Locale
@@ -204,24 +206,36 @@ private fun WeatherDetailItem(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-private fun WeatherLoadedViewPreview() {
-    val weather =
-        Weather(
-            current =
-                CurrentWeather(
-                    temperature = 20.0,
-                    feelsLike = 18.0,
-                    humidity = 60,
-                    windSpeed = 10.0,
-                    code = WeatherCode.CLEAR_SKY,
-                ),
-            hourly = emptyList(),
-            daily = emptyList(),
-        )
-
-    WeatherLoadedView(
-        weather = weather,
+private fun previewWeather() =
+    Weather(
+        current =
+            CurrentWeather(
+                temperature = 20.0,
+                feelsLike = 18.0,
+                humidity = 60,
+                windSpeed = 10.0,
+                code = WeatherCode.CLEAR_SKY,
+            ),
+        hourly = emptyList(),
+        daily = emptyList(),
     )
+
+@Preview(showBackground = true, name = "Loaded Light")
+@Composable
+private fun WeatherLoadedViewLightPreview() {
+    WeatherNowTheme(darkTheme = false) {
+        WeatherLoadedView(weather = previewWeather())
+    }
+}
+
+@Preview(
+    showBackground = true,
+    name = "Loaded Dark",
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+)
+@Composable
+private fun WeatherLoadedViewDarkPreview() {
+    WeatherNowTheme(darkTheme = true) {
+        WeatherLoadedView(weather = previewWeather())
+    }
 }
