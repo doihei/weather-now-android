@@ -15,10 +15,11 @@ core/ui/src/main/kotlin/.../core/ui/
 │   ├── WeatherErrorView.kt
 │   └── HourlyForecastChart.kt
 ├── theme/                  # MaterialTheme カスタマイズ・デザイントークン
-│   ├── WeatherNowColor.kt    # カラーパレット定義（light / dark トークン）
-│   ├── WeatherNowSize.kt     # サイズトークン（コンポーネントの高さ・アイコンサイズ）
-│   ├── WeatherNowSpacing.kt  # スペーシングトークン（余白・パディング）
-│   └── WeatherNowTheme.kt    # MaterialTheme カスタマイズ（LightColorScheme / DarkColorScheme）
+│   ├── WeatherNowColor.kt      # カラーパレット定義（light / dark トークン）
+│   ├── WeatherNowSize.kt       # サイズトークン（コンポーネントの高さ・アイコンサイズ）
+│   ├── WeatherNowSpacing.kt    # スペーシングトークン（余白・パディング）
+│   ├── WeatherNowTypography.kt # タイポグラフィトークン（TextStyle 定義）
+│   └── WeatherNowTheme.kt      # MaterialTheme カスタマイズ（colorScheme / typography を配線）
 └── weather/                # domain モデルと UI の橋渡し（@StringRes extension 等）
     └── WeatherCodeRes.kt   # WeatherCode.labelResId extension
 
@@ -165,6 +166,37 @@ object WeatherNowSize {
     val chartHourlyHeight = 200.dp // HourlyForecastChart の高さ
 }
 ```
+
+### WeatherNowTypography（フォントスタイル）
+
+```kotlin
+// core/ui/theme/WeatherNowTypography.kt
+object WeatherNowTypography {
+    val displayLarge  = TextStyle(fontSize = 57.sp, fontWeight = FontWeight.Light, ...)  // 気温
+    val displayMedium = TextStyle(fontSize = 45.sp, ...)                                 // エラー絵文字
+    val titleLarge    = TextStyle(fontSize = 22.sp, fontWeight = FontWeight.Medium, ...) // 天気コード
+    val titleMedium   = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Medium, ...) // セクション見出し
+    val bodyLarge     = TextStyle(fontSize = 16.sp, ...)                                 // エラーメッセージ
+    val bodyMedium    = TextStyle(fontSize = 14.sp, ...)                                 // 曜日・気温範囲
+    val bodySmall     = TextStyle(fontSize = 12.sp, ...)                                 // 予報の補足
+    val labelSmall    = TextStyle(fontSize = 11.sp, fontWeight = FontWeight.Medium, ...) // 湿度・風速ラベル
+}
+```
+
+`WeatherNowTheme.kt` で `Typography(...)` に変換して `MaterialTheme` に渡すため、
+コンポーネント側は `MaterialTheme.typography.displayLarge` のまま変更不要。
+
+**コンポーネントでの使い方（iOS との対応）:**
+
+| iOS | Compose |
+|---|---|
+| `Font.system(.largeTitle, weight: .thin)` | `MaterialTheme.typography.displayLarge` |
+| `Font.system(.title, weight: .regular)` | `MaterialTheme.typography.titleLarge` |
+| `Font.system(.headline, weight: .medium)` | `MaterialTheme.typography.titleMedium` |
+| `Font.system(.body)` | `MaterialTheme.typography.bodyLarge` |
+| `Font.system(.subheadline)` | `MaterialTheme.typography.bodyMedium` |
+| `Font.system(.caption)` | `MaterialTheme.typography.bodySmall` |
+| `Font.system(.caption2)` | `MaterialTheme.typography.labelSmall` |
 
 ### Token にない値が出てきたら
 
