@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.doihei.weathernow.core.model.weather.HourlyForecast
+import com.doihei.weathernow.core.model.weather.WeatherCode
 import com.doihei.weathernow.core.ui.R
 import com.doihei.weathernow.core.ui.theme.WeatherNowSize
 import com.doihei.weathernow.core.ui.theme.WeatherNowSpacing
@@ -28,7 +29,10 @@ import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineCartesianLa
 import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
 import com.patrykandpatrick.vico.compose.cartesian.rememberVicoScrollState
 import com.patrykandpatrick.vico.compose.common.Fill
+import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import kotlin.math.PI
+import kotlin.math.sin
 
 private object HourlyForecastChartDefaults {
     const val AREA_ALPHA = 0.15f
@@ -46,6 +50,7 @@ fun HourlyForecastChart(
 ) {
     val chartLineColor = MaterialTheme.colorScheme.primary
     val timeFormatPattern = stringResource(R.string.format_time_chart)
+    val dateFormatPattern = stringResource(R.string.format_date_chart)
 
     // CartesianChartModelProducer：Vico のデータバインディングの核
     // remember で Composition のライフタイムを通じて保持する
@@ -66,15 +71,15 @@ fun HourlyForecastChart(
         }
     }
 
-    // X 軸のフォーマッター：インデックス → 時刻文字列
-    // iOS の .chartXAxis { AxisMarks(values: .stride(by: .hour, count: 6)) } に対応
+    // X 軸フォーマッター：0時（日付境界）は "M/d"、それ以外は "HH:mm"
+    // 7日分の折れ線では「どの日か」が分かるラベルが必要なため、
+    // 日付変わり目（hour == 0）だけ日付を表示して視認性を確保する
+    // iOS の .chartXAxis { AxisMarks { if $0.index % 6 == 0 { ... } } } に対応
     val xAxisFormatter =
         CartesianValueFormatter { _, x, _ ->
-            hourlyForecasts
-                .getOrNull(x.toInt())
-                ?.time
-                ?.format(DateTimeFormatter.ofPattern(timeFormatPattern))
-                ?: ""
+            val forecast = hourlyForecasts.getOrNull(x.toInt()) ?: return@CartesianValueFormatter ""
+            val pattern = if (forecast.time.hour == 0) dateFormatPattern else timeFormatPattern
+            forecast.time.format(DateTimeFormatter.ofPattern(pattern))
         }
 
     // Y 軸のフォーマッター：気温に単位を付ける
@@ -119,13 +124,14 @@ fun HourlyForecastChart(
                     VerticalAxis.rememberStart(
                         valueFormatter = yAxisFormatter,
                     ),
-                // X 軸（下側）。6 時間おきにラベルを表示する
-                // iOS の .chartXAxis { AxisMarks(values: .stride(by: .hour, count: 6)) }
+                // X 軸（下側）。6 時間ごとにラベルを配置する
+                // aligned(spacing = 6) → インデックス 0, 6, 12, 18, 24... にラベルを置く
+                // 0 時エントリ（hour == 0）は日付（M/d）、他は時刻（HH:mm）と組み合わせて
+                // 「どの日の何時か」が一目でわかる X 軸になる
                 bottomAxis =
                     HorizontalAxis.rememberBottom(
                         valueFormatter = xAxisFormatter,
-                        // 6件ごとにラベル（24時間 × 7日 ÷ 6 = 28ラベル）
-                        itemPlacer = HorizontalAxis.ItemPlacer.segmented(),
+                        itemPlacer = HorizontalAxis.ItemPlacer.aligned(spacing = { 6 }),
                     ),
             ),
         modelProducer = modelProducer,
@@ -140,11 +146,26 @@ fun HourlyForecastChart(
     )
 }
 
+// 48時間分のダミーデータ（2日間）
+// 気温はサイン波で近似：深夜 10°・正午 26° のリアルな日変化
+// sin(i * π/12 - π/2) → i=0(00:00)で最低値、i=12(12:00)で最高値
+private fun previewHourlyForecasts(): List<HourlyForecast> {
+    val base = LocalDateTime.of(2024, 6, 17, 0, 0)
+    return (0..47).map { i ->
+        HourlyForecast(
+            time = base.plusHours(i.toLong()),
+            temperature = 18.0 + 8.0 * sin(i * PI / 12.0 - PI / 2.0),
+            precipitation = if (i in 10..14) 2.0 else 0.0,
+            code = WeatherCode.CLEAR_SKY,
+        )
+    }
+}
+
 @Preview(showBackground = true, name = "Chart Light")
 @Composable
 private fun HourlyForecastChartLightPreview() {
     WeatherNowTheme(darkTheme = false) {
-        HourlyForecastChart(hourlyForecasts = emptyList())
+        HourlyForecastChart(hourlyForecasts = previewHourlyForecasts())
     }
 }
 
@@ -156,6 +177,6 @@ private fun HourlyForecastChartLightPreview() {
 @Composable
 private fun HourlyForecastChartDarkPreview() {
     WeatherNowTheme(darkTheme = true) {
-        HourlyForecastChart(hourlyForecasts = emptyList())
+        HourlyForecastChart(hourlyForecasts = previewHourlyForecasts())
     }
 }

@@ -19,6 +19,7 @@
     <!-- HourlyForecastChart -->
     <string name="forecast_hourly_title">時間ごとの気温</string>
     <string name="format_time_chart">HH:mm</string>
+    <string name="format_date_chart">M/d</string>
     <string name="format_feels_like">体感 %1$.1f%2$s</string>
 
     <!-- WeatherCode descriptions -->
