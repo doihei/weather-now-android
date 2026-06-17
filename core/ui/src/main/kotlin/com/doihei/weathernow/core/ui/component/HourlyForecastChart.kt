@@ -8,10 +8,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import com.doihei.weathernow.core.model.weather.HourlyForecast
 import com.doihei.weathernow.core.ui.R
+import com.doihei.weathernow.core.ui.theme.WeatherNowSize
+import com.doihei.weathernow.core.ui.theme.WeatherNowSpacing
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
 import com.patrykandpatrick.vico.compose.cartesian.axis.HorizontalAxis
 import com.patrykandpatrick.vico.compose.cartesian.axis.VerticalAxis
@@ -128,8 +129,8 @@ fun HourlyForecastChart(
         modifier =
             modifier
                 .fillMaxSize()
-                .height(dimensionResource(R.dimen.chart_hourly_height))
-                .padding(vertical = dimensionResource(R.dimen.spacing_sm)),
+                .height(WeatherNowSize.chartHourlyHeight)
+                .padding(vertical = WeatherNowSpacing.sm),
         // 横スクロールを有効化（24時間×7日分は横幅に収まらないため）
         // iOS の .chartScrollableAxes(.horizontal) に対応
         scrollState = rememberVicoScrollState(scrollEnabled = true),

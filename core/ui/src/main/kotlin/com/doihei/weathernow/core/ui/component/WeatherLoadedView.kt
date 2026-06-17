@@ -16,7 +16,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.doihei.weathernow.core.model.settings.AppSettings
@@ -25,6 +24,7 @@ import com.doihei.weathernow.core.model.weather.DailyForecast
 import com.doihei.weathernow.core.model.weather.Weather
 import com.doihei.weathernow.core.model.weather.WeatherCode
 import com.doihei.weathernow.core.ui.R
+import com.doihei.weathernow.core.ui.theme.WeatherNowSpacing
 import com.doihei.weathernow.core.ui.weather.labelResId
 import java.time.format.TextStyle
 import java.util.Locale
@@ -42,10 +42,10 @@ fun WeatherLoadedView(
         modifier =
             modifier
                 .fillMaxSize()
-                .padding(horizontal = dimensionResource(R.dimen.spacing_lg)),
-        verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_md)),
+                .padding(horizontal = WeatherNowSpacing.lg),
+        verticalArrangement = Arrangement.spacedBy(WeatherNowSpacing.md),
     ) {
-        item { Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_sm))) }
+        item { Spacer(modifier = Modifier.height(WeatherNowSpacing.sm)) }
 
         // 現在の天気カード
         item {
@@ -63,7 +63,7 @@ fun WeatherLoadedView(
                 Text(
                     text = stringResource(R.string.forecast_hourly_title),
                     style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.padding(top = dimensionResource(R.dimen.spacing_sm)),
+                    modifier = Modifier.padding(top = WeatherNowSpacing.sm),
                 )
             }
             item {
@@ -79,14 +79,14 @@ fun WeatherLoadedView(
             Text(
                 text = stringResource(R.string.forecast_7day),
                 style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(top = dimensionResource(R.dimen.spacing_sm)),
+                modifier = Modifier.padding(top = WeatherNowSpacing.sm),
             )
         }
         items(weather.daily) { daily ->
             DailyForecastRow(forecast = daily, temperatureUnit = temperatureUnit)
         }
 
-        item { Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_lg))) }
+        item { Spacer(modifier = Modifier.height(WeatherNowSpacing.lg)) }
     }
 }
 
@@ -98,7 +98,7 @@ private fun CurrentWeatherCard(
 ) {
     Card(modifier = modifier.fillMaxSize()) {
         Column(
-            modifier = Modifier.padding(dimensionResource(R.dimen.spacing_card)),
+            modifier = Modifier.padding(WeatherNowSpacing.card),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             // 天気の説明文（:core:ui の WeatherCodeRes から @StringRes で取得）
@@ -107,7 +107,7 @@ private fun CurrentWeatherCard(
                 text = stringResource(weather.current.code.labelResId),
                 style = MaterialTheme.typography.titleLarge,
             )
-            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_sm)))
+            Spacer(modifier = Modifier.height(WeatherNowSpacing.sm))
             // 気温
             Text(
                 text =
@@ -118,7 +118,7 @@ private fun CurrentWeatherCard(
                     ),
                 style = MaterialTheme.typography.displayLarge,
             )
-            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_xs)))
+            Spacer(modifier = Modifier.height(WeatherNowSpacing.xs))
             // 体感温度
             Text(
                 text =
@@ -129,9 +129,9 @@ private fun CurrentWeatherCard(
                     ),
                 style = MaterialTheme.typography.displayLarge,
             )
-            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_md)))
+            Spacer(modifier = Modifier.height(WeatherNowSpacing.md))
             HorizontalDivider()
-            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_md)))
+            Spacer(modifier = Modifier.height(WeatherNowSpacing.md))
             // 湿度・風速
             Row(
                 modifier = Modifier.fillMaxSize(),

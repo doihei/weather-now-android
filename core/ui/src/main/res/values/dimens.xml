@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Spacing -->
-    <dimen name="spacing_xs">4dp</dimen>
-    <dimen name="spacing_sm">8dp</dimen>
-    <dimen name="spacing_md">12dp</dimen>
-    <dimen name="spacing_lg">16dp</dimen>
-    <dimen name="spacing_xl">24dp</dimen>
-    <dimen name="spacing_card">20dp</dimen>
+    <!--
+        spacing_* は WeatherNowSpacing Token に移行済み。
+        端末サイズ修飾子（res/values-sw600dp/dimens.xml 等）で
+        値を変えたい場合のみここに追記する。
+        現状は使用箇所なし。
+    -->
 
-    <!-- Chart -->
+    <!-- Chart — 端末幅によって高さを変える可能性があるため残す -->
     <dimen name="chart_hourly_height">200dp</dimen>
 </resources>
