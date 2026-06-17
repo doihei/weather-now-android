@@ -149,6 +149,7 @@ fun HourlyForecastChart(
 // 48時間分のダミーデータ（2日間）
 // 気温はサイン波で近似：深夜 10°・正午 26° のリアルな日変化
 // sin(i * π/12 - π/2) → i=0(00:00)で最低値、i=12(12:00)で最高値
+@Suppress("MagicNumber")
 private fun previewHourlyForecasts(): List<HourlyForecast> {
     val base = LocalDateTime.of(2024, 6, 17, 0, 0)
     return (0..47).map { i ->
