@@ -14,9 +14,11 @@ core/ui/src/main/kotlin/.../core/ui/
 │   ├── WeatherLoadingView.kt
 │   ├── WeatherErrorView.kt
 │   └── HourlyForecastChart.kt
-├── theme/                  # MaterialTheme カスタマイズ
-│   ├── WeatherNowColor.kt  # カラーパレット定義（light / dark トークン）
-│   └── WeatherNowTheme.kt  # MaterialTheme カスタマイズ（LightColorScheme / DarkColorScheme）
+├── theme/                  # MaterialTheme カスタマイズ・デザイントークン
+│   ├── WeatherNowColor.kt    # カラーパレット定義（light / dark トークン）
+│   ├── WeatherNowSize.kt     # サイズトークン（コンポーネントの高さ・アイコンサイズ）
+│   ├── WeatherNowSpacing.kt  # スペーシングトークン（余白・パディング）
+│   └── WeatherNowTheme.kt    # MaterialTheme カスタマイズ（LightColorScheme / DarkColorScheme）
 └── weather/                # domain モデルと UI の橋渡し（@StringRes extension 等）
     └── WeatherCodeRes.kt   # WeatherCode.labelResId extension
 
@@ -129,24 +131,54 @@ Text(stringResource(weather.currentWeather.code.labelResId))
 
 ## 寸法リソースの管理
 
-### dimens.xml の配置
+### 基本方針：Kotlin Token を使う（dimens.xml は例外）
 
-`core/ui/src/main/res/values/dimens.xml` に追加する。
+dp 値は `WeatherNowSpacing` / `WeatherNowSize` の Kotlin Token が第一選択。
+`dimens.xml` は端末サイズ修飾子（`-sw600dp` 等）で値を切り替えたい場合のみ使う。
 
-既存のデザイントークン（`WeatherNowSpacing`, `WeatherNowTypography` 等）が存在する場合は dimens.xml より **Token を優先する**。
+**Token を優先する理由：**
+- Kotlin コードだけで完結し、`Context` が不要（テスト・Preview ともに動く）
+- IDE の補完で名前が出る（`R.dimen.spacing_lg` より発見しやすい）
+- 将来 `CompositionLocal` でオーバーライドできる拡張性がある
 
-### スペーシング定数の命名規則
+### WeatherNowSpacing（余白・パディング）
 
-| キー | 値 | 用途の目安 |
-|---|---|---|
-| `spacing_xs` | 4dp | 最小の余白（気温と体感温度の間など） |
-| `spacing_sm` | 8dp | 小さな余白・アイコン周辺 |
-| `spacing_md` | 12dp | リストアイテム間・区切り線前後 |
-| `spacing_lg` | 16dp | 画面端からのマージン・セクション間 |
-| `spacing_xl` | 24dp | 大きなセクション余白・エラー画面など |
-| `spacing_card` | 20dp | Card 内のパディング専用 |
+```kotlin
+// core/ui/theme/WeatherNowSpacing.kt
+object WeatherNowSpacing {
+    val xs   = 4.dp   // 最小余白（気温と体感温度の間など）
+    val sm   = 8.dp   // 小さな余白・アイコン周辺
+    val md   = 12.dp  // リストアイテム間・区切り線前後
+    val lg   = 16.dp  // 画面端マージン・セクション間（最もよく使う）
+    val xl   = 24.dp  // 大きなセクション余白・エラー画面
+    val card = 20.dp  // Card 内パディング専用
+}
+```
 
-新しい dp 値を追加するときは既存エントリと重複しないか確認し、同じ値なら流用する。
+### WeatherNowSize（コンポーネントの大きさ）
+
+```kotlin
+// core/ui/theme/WeatherNowSize.kt
+object WeatherNowSize {
+    val iconMd            = 24.dp  // アイコン（中）
+    val iconLg            = 32.dp  // アイコン（大）
+    val chartHourlyHeight = 200.dp // HourlyForecastChart の高さ
+}
+```
+
+### Token にない値が出てきたら
+
+既存 Token と同じ dp 値なら流用する。新しい用途・値なら該当 Token ファイルにプロパティを追記してから使う（`dimens.xml` に追加しない）。
+
+```kotlin
+// 例：WeatherNowSize.kt に追記
+val someNewSize = 40.dp
+```
+
+### dimens.xml を使う例外ケース
+
+端末幅によってレイアウトを変えたい場合は `res/values-sw600dp/dimens.xml` 等と組み合わせて使う。
+その場合のみ `dimensionResource(R.dimen.xxx)` を使用する。
 
 ## 依存関係の制約
 

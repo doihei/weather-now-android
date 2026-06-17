@@ -96,7 +96,7 @@ class DefaultWeatherRepository @Inject constructor(private val api: OpenMeteoApi
 | **3** | `:feature:weather-mvvm` | ViewModel / viewModelScope / StateFlow / ライフサイクル | 完了 |
 | **4** | `:feature:weather-mvi` | reducer / Channel one-off イベント / 純粋状態遷移 | 完了 |
 | **5** | 全画面 + `:app` | Compose UI / Navigation 3 / Vico グラフ / ダークモード | 進行中（Navigation 3 配線・app エントリポイント・基本 Screen・Vico グラフ（HourlyForecastChart）実装済み。ダークモード未着手） |
-| **Ex** | `:core:ui` | デザイントークン / MaterialTheme カスタム / strings.xml | 進行中（コンポーネント・テーマ・strings.xml・カラー／スペーシングトークン実装済み。タイポグラフィトークン未着手） |
+| **Ex** | `:core:ui` | デザイントークン / MaterialTheme カスタム / strings.xml | 進行中（コンポーネント・テーマ・strings.xml・カラー／スペーシング／サイズトークン実装済み。タイポグラフィトークン未着手） |
 
 ---
 
